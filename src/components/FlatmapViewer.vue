@@ -1,4 +1,4 @@
-<template>                  
+<template>
     <slot :widgetName="widgetName"></slot>
     <button v-if="debug" @click="debugCall">test selection</button>
     <div v-bind="$attrs" class="flatmap-viewer tw-p-0">
@@ -11,7 +11,7 @@
                         <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
 
-        <FlatmapVuer class="tw-px-2 tw-py-2" uuid="3b9344c0-4d66-5944-9261-e426d8664f7c" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
+        <FlatmapVuer ref="flatmapRef" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
 
     </div>
 
@@ -37,14 +37,15 @@
 
   const widgetName = ref('Flatmap Selector');
   const emitter = inject('emitter');
-  
+  const flatmapRef = ref('flatmapRef');
+
     let locationId = "";
     const locationLabel = ref("None selected");
     const locationStore = useLocationStore();
 
 function FlatmapSelected(data){
-    if (data.eventType === 'click') { 
-   // showMarker(data);
+    if (data.eventType === 'click') {
+   showMarker(data);
     locationLabel.value = data.label;
     if(!data.feature.location || locationId===data.feature.location){return;}
     locationId = data.feature.location;
@@ -56,9 +57,8 @@ function FlatmapSelected(data){
 function debugCall(){
     locationStore.getLocationFromMinMax(.1,.15);
 }
-function showMarker(){
-    if (data.eventType === 'click') {      
-        const flatmapRef = ref('flatmapRef');
+function showMarker(data){
+    if (data.eventType === 'click') {
         const flatmapRefMap = flatmapRef.value.mapImp;
 
         const { kind, models, location } = data.feature;
