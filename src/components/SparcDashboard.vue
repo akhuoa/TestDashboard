@@ -1,6 +1,7 @@
 <template>
     <div class="dash-header tw-h-10">
      <span class="tw-float-left tw-m-1"><el-button @click="staticMode=!staticMode">{{ editGridButton }}</el-button></span>
+     <FilterWidget></FilterWidget>
     </div>
     <el-col v-if="!staticMode">
       <el-row class="tw-m-12">
@@ -27,6 +28,7 @@
 
 import { ref, onBeforeMount, onMounted, nextTick, inject, onUpdated, watch} from 'vue';
 import { GridStack } from 'gridstack';
+import FilterWidget from "../devComponents/FilterWidget/FilterWidget.vue"
 import ItemWidget from './ItemWidget.vue';
 import { useGlobalVarsStore }from '../stores/globalVars.ts';
 import {Dataset} from '../assets/Model';

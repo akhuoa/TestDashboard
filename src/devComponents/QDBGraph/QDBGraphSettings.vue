@@ -169,7 +169,7 @@ const getMetricList = async ()=>{
         }
     }catch(e){
         console.error("couldn't fetch classes/metrics from QDB");
-        console.log(e)
+        console.error(e.message)
     }
   }
   function selectMetric(selectedMetric, targetMetric){

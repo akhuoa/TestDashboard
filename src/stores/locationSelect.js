@@ -55,7 +55,7 @@ const getPackageIds = async(instances)=>{
       let _response = {};
       const instance = instances[i].inst || null;
       const dataset = instances[i].dataset || null;
-      GlobalVars.datasetID = dataset;
+      GlobalVars.DATASET_ID = dataset;
       try{
           await Api.qdb.getImagesByInstance(dataset,instance).then(response =>{
               _response = response;
@@ -80,7 +80,7 @@ const getMetadataForImages= async(images)=>{
 
       var config = { headers: {'Content-Type': 'application/json',}}
       //packageids from image obj
-      const packageIdList = images.map(i=>"package:"+i.id)
+      const packageIdList = images.map(i=>"package:"+i.id);
       var data = JSON.stringify({
         "track_total_hits": true,
         "query": {

@@ -23,15 +23,17 @@
   import { useLocationStore} from "../stores/locationSelect";
   import "@abi-software/flatmapvuer/dist/style.css";
   FlatmapVuer.props.flatmapAPI.default="https://mapcore-demo.org/curation/flatmap/";
-    defineOptions({
+
+defineOptions({
         inheritAttrs: false
     })
   const props = defineProps({
     listening:{
-            tyep:Boolean
+            type:Boolean
     }
   })
   const debug = false;
+  const GlobalVars = useGlobalVarsStore();
   const disableFlatmapUI = true;
   let FlatmapReady = false;
 
@@ -45,9 +47,11 @@
 
 function FlatmapSelected(data){
     if (data.eventType === 'click') {
-   showMarker(data);
-    locationLabel.value = data.label;
+    showMarker(data);
+
     if(!data.feature.location || locationId===data.feature.location){return;}
+    locationLabel.value = data.label;
+    GlobalVars.FLATMAP_LOCATION = data.label ? data.label: "";
     locationId = data.feature.location;
     //const locationMinMax = addBufferToMinMax(locationId);
     //send to image selector
@@ -102,7 +106,7 @@ function addBufferToMinMax(id){
         }
         :deep(.flatmap-tooltip-popup){
             z-index: 4;
-            position:fixed;
+            position:relative;
             max-width: 170px !important;
         }
 
