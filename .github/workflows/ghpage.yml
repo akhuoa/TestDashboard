@@ -30,7 +30,7 @@ jobs:
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
         run: |
-          yarn build
+          yarn run build-static
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
