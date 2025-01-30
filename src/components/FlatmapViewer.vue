@@ -11,7 +11,7 @@
                         <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
 
-        <FlatmapVuer ref="flatmapRef" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
+        <FlatmapVuer ref="flatmapRef" uuid="0ea568ec-538d-52f3-a8e7-0437d844e1cf" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
 
     </div>
 
@@ -22,7 +22,7 @@
   import { useGlobalVarsStore } from '../stores/globalVars'
   import { useLocationStore} from "../stores/locationSelect";
   import "@abi-software/flatmapvuer/dist/style.css";
-  FlatmapVuer.props.flatmapAPI.default="https://mapcore-demo.org/curation/flatmap/";
+  FlatmapVuer.props.flatmapAPI.default="https://mapcore-demo.org/devel/flatmap/v4/";
 
 defineOptions({
         inheritAttrs: false
