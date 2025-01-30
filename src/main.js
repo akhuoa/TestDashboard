@@ -8,15 +8,15 @@ import '../node_modules/sparc-design-system-components-2/dist/style.css';
 import mitt from 'mitt'
  import App from './App.vue'
 import { useGlobalVarsStore } from './stores/globalVars'
-import "../dist/output.css"
-import { clickOut } from "./directives/directives.js" 
+// import "../dist/output.css"
+import { clickOut } from "./directives/directives.js"
 
  const app = createApp(App);
 app.use(DesignSystemComponentsPlugin);
 app.use(createPinia());
 
 const emitter = mitt();
-app.provide('emitter', emitter); 
+app.provide('emitter', emitter);
 
 const componentMap = [
     'ImageSelector',
@@ -26,7 +26,7 @@ const componentMap = [
     'TextWidget'
 ]
 componentMap.forEach(comp=>{
-    const asyncComponent = defineAsyncComponent(() => import(`./components/${comp}.vue`)); 
+    const asyncComponent = defineAsyncComponent(() => import(`./components/${comp}.vue`));
     app.component(comp, asyncComponent);
 })
 
