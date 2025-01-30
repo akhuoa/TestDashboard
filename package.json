@@ -25,7 +25,7 @@
     "format": "prettier --write src/",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-static": "tsc & vite build -c vite.static-config.ts; yarn tailwindcss -i ./src/assets/base.css -o ./dist/output.css",
+    "build-static": "tsc & vite build -c vite.static-config.ts",
     "test": "vitest"
   },
   "dependencies": {
