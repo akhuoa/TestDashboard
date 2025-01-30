@@ -47,6 +47,8 @@ defineOptions({
 
 function FlatmapSelected(data){
     if (data.eventType === 'click') {
+    resetLocation();
+    clearMarkers();
     showMarker(data);
 
     if(!data.feature.location || locationId===data.feature.location){return;}
@@ -67,12 +69,21 @@ function showMarker(data){
 
         const { kind, models, location } = data.feature;
         if (flatmapRefMap && models && location && kind === 'centreline') {
-            flatmapRefMap.clearMarkers(); // to clear existing markers
             flatmapRefMap.addMarker(models, {
                 location: location
             });
         }
     }
+}
+function clearMarkers() {
+    const flatmapRefMap = flatmapRef.value.mapImp;
+    if (flatmapRefMap) {
+        flatmapRefMap.clearMarkers();
+    }
+}
+function resetLocation() {
+    locationId = "";
+    locationLabel.value = "None selected";
 }
 //this function is my temp work around to not having the map return anything useful
 function addBufferToMinMax(id){
