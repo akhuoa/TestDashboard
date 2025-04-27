@@ -2,19 +2,10 @@ import { ref, inject } from 'vue'
 import { defineStore } from 'pinia'
 import { Api } from "../services";
 import {useGlobalVarsStore} from "../stores/globalVars"
+import { TableObject} from "../devComponents/ImageSelector/ImageModel"
 const GlobalVars = useGlobalVarsStore();
 
 export const useLocationStore = defineStore('locationSelected', () => {
-  const emitter = inject('emitter');
-
-  //this was used to add this event listener to a component
-    function init(){
-      // emitter.on('FlatmapViewer-anatomicalLocationSelected',(location)=>{
-      //   if(location && location.min && location.max){
-      //     getRegionMinMax(location.min,location.max);
-      //   }
-      // });
-    }
 
 function getLocationFromMinMax(min,max){
   if(min && max){
@@ -41,37 +32,10 @@ const getRegionMinMax = async(min, max, subject)=>{
     }
 }
 function handleMinMaxRequest(results){
-    const instances =results.filter(y => y.agg_type ==="instance");
-    getPackageIds(instances)
+  let ImagesArray = results.filter(x=>x.id_type!=="quantdb"&& x.id);
+  getMetadataForImages(ImagesArray);
 }
 
-//send in instanceIds to get the package Ids associated with them. 
-// call only takes 1 instance id at a time currently
-
-const getPackageIds = async(instances)=>{
-  let ImagesArray = [];
-  for(var i=0;i<instances.length;i++){
-      let _image_list = {};
-      let _response = {};
-      const instance = instances[i].inst || null;
-      const dataset = instances[i].dataset || null;
-      GlobalVars.DATASET_ID = dataset;
-      try{
-          await Api.qdb.getImagesByInstance(dataset,instance).then(response =>{
-              _response = response;
-          })
-          if (_response.status === 200) {
-            _image_list = _response.data.result;
-            ImagesArray = [...ImagesArray, ..._image_list]
-          }
-      }catch(e){
-          console.error("couldn't get images from instance "+instance+" and dataset "+dataset+" from QDB");
-          console.log(e)
-    }
-  }
-  ImagesArray = ImagesArray.filter(x=>x.id_type!=="quantdb"&& x.id);
-  getMetadataForImages(ImagesArray)
-}
 //call for actual metadata you can use
 const getMetadataForImages= async(images)=>{
   let withMetadata = {};
@@ -98,17 +62,25 @@ const getMetadataForImages= async(images)=>{
       })
       if (_response.status === 200) {
         withMetadata = _response.data.hits.hits;
-        //map to image objectl. include datasetid and packageid
-        GlobalVars.MBF_IMAGE_ARRAY = withMetadata;
+        parseDataIntoImageArray(withMetadata);
       }
   }catch(e){
       console.error("couldn't get metadata from list of images from File Level Index");
       console.log(e)
   }
-
 }
+  function parseDataIntoImageArray(images){
+    try{
+      //rename TableObject cuz it doesn't make sense anymore. it's a parsed image array
+      const imageArray = new TableObject(images);
+      GlobalVars.setImageArray(imageArray.SparcImageArray);
+    }catch(ex){
+      console.error("error parsing Image Array: "+ex.message)
+    }
+  }
+
 
   const componentList = ref([""]);
   const navigatorType = ref("LocationNav");//default 
-  return { init, navigatorType, getLocationFromMinMax }
+  return { navigatorType, getLocationFromMinMax }
 })

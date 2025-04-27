@@ -29,19 +29,13 @@
 
     const GlobalVars = useGlobalVarsStore();
     const shareLink = ref("");
-    watch(() => GlobalVars.MBF_SHARE_LINK, (newVal, oldVal) => {
-        console.log(newVal)
-        shareLink.value = newVal;
-        console.log(shareLink.value)
+    watch(() => GlobalVars.SELECTED_IMAGE, (newVal, oldVal) => {
+        ///do something
     })
-    //uses widgetID to specify own wrapper
-    // watch(() => props.listening, (newVal, oldVal) => {
-    //        //emitter.emit('select-widget'+props.widgetID, newVal);
-    // });
 
 </script>
 <style scoped lang="scss">
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
+
     .viewer-img{
         display: flex;
         height: 100%;
@@ -51,7 +45,7 @@
         }
     }
     .highlight{
-        border: solid $lightPurple 2px;
+        border: solid purple 2px; //light purple
     }
 .metadata-imgV{
     text-align: left;
@@ -62,8 +56,4 @@
         margin:0 !important;
     }
 }
-</style>
-<style lang="scss">
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
-
 </style>

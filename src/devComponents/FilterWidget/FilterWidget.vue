@@ -42,11 +42,17 @@ const filterOrder = ["Dataset", "Vagal Location", "Selected Image"]
 
 </script>
 <style scoped lang="scss">
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
+@import '../../assets/vars.scss';
+
     .color-secondary{
-        color:$lightGrey;
+        color:grey;//light grey
     }
     .color-primary{
         color:white;
+    }
+    .filter-wrapper{
+        background-color: $secondary;
+        height: 33px;
+        padding:8px;
     }
 </style>

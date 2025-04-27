@@ -7,7 +7,9 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  corePlugins: {
+    preflight: false, // Prevents Tailwind from overriding global styles
+  },
   prefix:'tw-'
 }
 

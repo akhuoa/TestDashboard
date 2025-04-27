@@ -18,7 +18,6 @@ const props = defineProps({
 
 </script>
 <style scoped lang="scss">
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
 .content-header{
     justify-content: space-between;
     align-items: center;
@@ -31,10 +30,10 @@ const props = defineProps({
 }
 
 .grid-stack-item-content {
-    border: 1px solid $lineColor1;
+    border: 1px solid grey; //line color 1
     border-radius: 0.2rem;
-    text-align: center;
-    background:$lineColor2;
+    text-align: start;
+    background:grey;//line color 2
 }
 :deep(.fill) {
     display: flex;

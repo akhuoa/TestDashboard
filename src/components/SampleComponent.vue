@@ -28,24 +28,11 @@
     const childIcons=shallowRef([{"comp":GraphIcon,"event":testIcon}]);
     function testIcon(){alert("test icon function")};
 
-    //emit a custom event that you name
-    //if you create an event that you want available for other widgets/users, please document it under Events in the README.md
-    //allows you to emit events that can be caught by other components. 
-    const emitter = inject('emitter');
-    let payload ={} //can be any type
-    emitter.emit('SampleComponent-eventName',payload);
-
-    //catch an event
-    // This is an active event that gets called by the ImageSelector component when a user clicks the "open" button on an image.
-    //see Events in documentation for all available events
-    emitter.on('ImageSelector-mbfImageSelected', (value) => {  
-        //do something
-    });
 
 </script>
 <style scoped lang="scss">
 //import SPARC styles if you want to have access to them. 
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
+
 
 //example of class styles
 .sample-component{

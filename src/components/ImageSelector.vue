@@ -20,19 +20,14 @@
 </template>
 <script setup>
     import { ref, inject, nextTick, watch } from "vue";
-    import { useOpenerStore } from "../stores/opener";
-    import { TableObject} from "../devComponents/ImageSelector/ImageModel"
-    import { Api } from "../services";
     import {useGlobalVarsStore} from "../stores/globalVars"
     const GlobalVars = useGlobalVarsStore();
-    const emitter = inject('emitter');
 
     defineOptions({
         inheritAttrs: false
     })    
     
     const imgPath = ref(null);
-    const ImageArray = ref(null);
     const TableData = ref();
 
     const widgetName = ref('MUSE Image Selector');
@@ -41,41 +36,32 @@
 const currentRow = ref();
 
 const handleCurrentChange = (val, index) => {
-  currentRow.value = val;
-  getBiolucidaLink(currentRow);
+    currentRow.value = val;
+    console.log(val)
+    const selectedImage =  GlobalVars.DASH_IMAGE_ARRAY.find(x => x.packageId === val.id)
+    GlobalVars.setSelectedImage(selectedImage) 
 }
 
-watch(() => GlobalVars.MBF_IMAGE_ARRAY, (newVal, oldVal) => {
+watch(() => GlobalVars.DASH_IMAGE_ARRAY, (newVal, oldVal) => {
     //convert to non-reactive object before passing it through the model. this avoids unexpected behavior
-    const imageArray = JSON.parse(JSON.stringify(newVal));
-    buildTableFromImages(imageArray);
+    //const imageArray = JSON.parse(JSON.stringify(newVal));
+    TableData.value = buildTableSPARC(newVal);
 })
 
-//on update
-const getBiolucidaLink = async (dataset)=>{
-    const sparcId = dataset.value.sparcId;
-    const packageId = dataset.value.id;
-    GlobalVars.MBF_IMAGE_NAME = packageId;
-    let share_link = "";
-    let _response = {};
-    try{
-        await Api.biolucida.getShareLink(packageId,sparcId).then(response =>{
-            _response = response;
+function buildTableSPARC(imageArray){
+        let _tempArr=[];
+        imageArray.forEach((img)=>{
+            let column = {
+                description: img.description,
+                sex: img.sex,
+                age:img.ageRange,
+                id:img.packageId,
+                sparcId:img.sparcID
+            }
+            _tempArr.push(column);
         })
-        if (_response.status === 200) {
-            share_link= _response.data.share_link;
-            GlobalVars.MBF_SHARE_LINK= share_link;
-        }
-    }catch(e){
-        console.error("couldn't fetch images from dataset");
+        return _tempArr;
     }
-}
-
-    function buildTableFromImages(images){
-        ImageArray.value = new TableObject(images);
-        TableData.value = ImageArray.value.buildTableSPARC();
-    }
-
 </script>
 <style scoped>
 :deep(.el-table__row){

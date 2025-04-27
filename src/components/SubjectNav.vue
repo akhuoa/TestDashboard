@@ -26,9 +26,6 @@
 </template>
 <script setup>
   import { ref} from "vue";
-  import { useOpenerStore } from "../stores/opener";
-
-  const opener = useOpenerStore();
 
   const emit = defineEmits(['setTitle'])
   emit('setTitle','Navigate by Subject');
@@ -38,7 +35,7 @@
   const imgPath3 = ref("./imgs/sub2.png");
 
 function selectSubject(img){
-    opener.openWidget("ImageSelector", [{key:"imageSrc",value:img}])
+
 
 }
 </script>

@@ -1,6 +1,6 @@
 import { onUnmounted } from "vue"
 
-const focus = {mounted: (el) => el.focus()}
+const focusOn = {mounted: (el) => el.focus()}
 
 const clickOut = {
     mounted: (el, binding, vnode) => {
@@ -16,4 +16,4 @@ const clickOut = {
       }
   };
 
-  export { focus, clickOut }
+  export { focusOn, clickOut }

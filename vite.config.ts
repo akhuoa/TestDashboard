@@ -1,11 +1,12 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
+import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
   plugins: [
-    vue()
+    vue(),
+    cssInjectedByJsPlugin()
   ],
   resolve: {
     alias: {
@@ -14,24 +15,23 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: "./src/DashboardPlugin.js",
+      entry: "./src/DashboardPlugin.ts",
       name: 'SparcDashboard',
-      formats:["es","cjs"],
+      formats: ["es", "cjs"],
       fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
     },
-    cssCodeSplit:false,
-    outDir:'dist',
+    cssCodeSplit: false,
+    outDir: 'dist',
     rollupOptions: {
-      // Externalize deps that shouldn't be bundled into your library
-      external: ['vue'],
+      // Externalizing Vue, Pinia, and Element Plus
+      external: ['vue', 'pinia', 'element-plus'],
       output: {
-
-        // Provide global variables to use in the UMD build for externalized deps
         globals: {
           vue: 'Vue',
+          pinia: 'Pinia',
+          'element-plus': 'ElementPlus',
         },
       },
     },
   },
 })
-

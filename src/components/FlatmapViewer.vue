@@ -3,12 +3,11 @@
     <button v-if="debug" @click="debugCall">test selection</button>
     <div v-bind="$attrs" class="flatmap-viewer tw-p-0">
         <div class="tw-text-left tw-pl-1 flatmap-text" >
-            <sparc-tooltip placement="top-left" content="select location on flatmap to filter the image selector">
-                            <template #item>
-                                <el-icon color="#8300BF"><InfoFilled /></el-icon>
-                            </template>
-                        </sparc-tooltip>
-                        <p><b>Current Location: </b>{{ locationLabel }}</p>
+            <el-tooltip placement="top-start">
+                <template #content>   select location on flatmap to filter the image selector  </template>
+                <el-icon color="#8300BF"><InfoFilled /></el-icon>
+            </el-tooltip>
+            <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
 
         <FlatmapVuer ref="flatmapRef" uuid="0ea568ec-538d-52f3-a8e7-0437d844e1cf" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
@@ -22,6 +21,9 @@
   import { useGlobalVarsStore } from '../stores/globalVars'
   import { useLocationStore} from "../stores/locationSelect";
   import "@abi-software/flatmapvuer/dist/style.css";
+  import { ElTooltip } from "element-plus";
+  import { InfoFilled } from "@element-plus/icons-vue";
+
   FlatmapVuer.props.flatmapAPI.default="https://mapcore-demo.org/devel/flatmap/v4/";
 
 defineOptions({
@@ -94,18 +96,23 @@ function addBufferToMinMax(id){
 }
 
 </script>
+<style>
+/* this cannot be scoped while still working as designed. Style leak exists reardless of this line */
+        @import "@abi-software/flatmapvuer/dist/style.css";
+</style>
 <style scoped lang="scss">
-@import './node_modules/sparc-design-system-components-2/src/assets/_variables.scss';
+@import "../assets/vars.scss";
+
     .flatmap-viewer{
         display: flex;
         flex-direction: column;
 
         .flatmap-text{
             display:flex;
-            height: 50px;
+            min-height: 60px;
             font-size:20px;
-            line-height: 20px;
-            margin: 4px;
+            line-height: 17px;
+            margin-left: 4px;
             .el-tooltip__trigger{
                 padding: 16px 5px 0 0;
                 font-size: 12px;
@@ -122,7 +129,7 @@ function addBufferToMinMax(id){
         }
 
         p{
-            color: $mediumGrey;
+            color: grey;
             font-size: 14px;
             b{
                 color:#8300BF;

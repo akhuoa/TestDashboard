@@ -1,0 +1,15 @@
+//add vars to vars.scss
+:root {
+    --dash-background: #f6fcff;
+    --dash-background2:#fbfdff;
+    --dash-backgroundBlocked:#cedded;
+
+    --dash-drop-shadow:0px -2px 4px rgba(7, 79, 124, 0.05), /* Light shadow on top */
+    0px 6px 10px rgba(7, 79, 124, 0.1);
+
+    --dash-text-dark: #243d8e;
+    --dash-text-medium:#546085;
+    --dash-text-light:#d9e3ff;
+
+    --dash-secondary:#24245b;
+  }

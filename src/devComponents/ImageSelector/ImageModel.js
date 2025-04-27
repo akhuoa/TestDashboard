@@ -9,18 +9,21 @@ class MBFImageObject {
         return clonedObject;
       }
 }
- class SparcImageObject
+//simplifies object for easier front end reading. 
+//add anything from the dataset's FLI/metadata to this object that you want to surface
+export class SparcImageObject
 {
     constructor(data, packageId){ //hits.hits[n]_source.dataset, hits.hits[n]_id
       //  this.id = data.image_id; 
         this.name = data.item.name || "SPARC_Schwaber_HeartB_section39-section374.jpx"; //item.name - truncate it
         this.description = data.item? data.item.description: "Image file associated with the accompanying xml file, viewable in TissueMapper", //item.description
         this.size = (Math.random()*10).toFixed(2)+"mb",
-        this.path = ""; 
+        this.urlPath = data.distributions.current[0].uri; //path_metadata.uri_human; 
         this.sparcID = data.objectID //pennsieve.organization.identifier
         this.packageId = packageId;
         this.sex = data.attributes&& data.attributes.subject&& data.attributes.subject.sex?data.attributes.subject.sex[0].value:"unknown";
         this.ageRange = data.attributes&& data.attributes.subject&& data.attributes.subject.ageCategory?data.attributes.subject.ageCategory[0].value:"unkown";
+        this.biolucidaPath = "";
     }
 }
 export class TableObject{
@@ -43,18 +46,5 @@ export class TableObject{
         })
         return _tempArr;
     }
-    buildTableSPARC(){
-        let _tempArr=[];
-        this.SparcImageArray.forEach((img)=>{
-            let column = {
-                description: img.description,
-                sex: img.sex,
-                age:img.ageRange,
-                id:img.packageId,
-                sparcId:img.sparcID
-            }
-            _tempArr.push(column);
-        })
-        return _tempArr;
-    }
+
 }
