@@ -80,6 +80,18 @@ import "../../assets/theme.scss"
 import "gridstack/dist/gridstack.min.css";
 import "gridstack/dist/gridstack-extra.min.css";
 
+const props = defineProps({
+    dBItems:{
+            type:Array,
+            required:true
+    },
+    hideHeader:Boolean,
+    options:{
+        type:Object,
+        required:false
+    }
+  })
+
 const debug = false;
 const _globalVars = useGlobalVarsStore();
 let _DatasetImgs = ref({});
@@ -94,19 +106,7 @@ let staticMode = ref(true);
 getItemsFromLS();
 let ComponentListOptions = _globalVars.componentList;
 let NewComponent = {};
-let NextId = DashboardItems.value.length;
-
-const props = defineProps({
-    dBItems:{
-            type:Array,
-            required:true
-    },
-    hideHeader:Boolean,
-    options:{
-        type:Object,
-        required:false
-    }
-  })
+let NextId = props.dBItems.length+1;
 
 onBeforeMount(() => {
     _globalVars.DASHBOARD_ITEMS= props.dBItems;
@@ -148,6 +148,7 @@ function initGridStack(){
 //Add Data to Global Vars for reactivity and Global Scoping -----------------------------
 function addOptionsToGlobalVars(){
   if(props.options?.globalData){
+    _globalVars.clearOptionsDataItems();
       for(const x in props.options.globalData){
         _globalVars.addOptionsDataItems(x,props.options.globalData[x])
       }
@@ -171,7 +172,6 @@ function addNewWidget(name) {
     NextId++;
     //add component to items array first. this will update the dom
     DashboardItems.value.push(node);
-
     nextTick(()=>{
       //after dom updates, add your widget to the grid with makewidget. don't use addwidget
       Grid.makeWidget(node.id);

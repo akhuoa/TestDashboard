@@ -48,7 +48,6 @@
 //this will only happen if the url is not provided by the FLI
 //The link will then need to be called using the sparc id and package id
 const getBiolucidaLink = async ()=>{
-  console.log(selectedImage.value)
   const sparcId = selectedImage.value.sparcID;
   const packageId = selectedImage.value.packageId;
 

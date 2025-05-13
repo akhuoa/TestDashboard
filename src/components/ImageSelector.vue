@@ -37,7 +37,6 @@ const currentRow = ref();
 
 const handleCurrentChange = (val, index) => {
     currentRow.value = val;
-    console.log(val)
     const selectedImage =  GlobalVars.DASH_IMAGE_ARRAY.find(x => x.packageId === val.id)
     GlobalVars.setSelectedImage(selectedImage) 
 }

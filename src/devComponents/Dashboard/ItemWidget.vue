@@ -1,5 +1,5 @@
 <template>
-            <div ref="instance" class="grid-stack-item-content" @click="selectWidget()">
+            <div ref="instance" class="grid-stack-item-content">
                 <component 
                 v-slot="slotProps" 
                 class="widget-body" 
@@ -83,7 +83,7 @@
 // hightlight functionslity
     let instance = ref(null);
     let highlight = ref(false)
-    
+    //highlight function depricated for now
     function selectWidget(){
         if(GlobalVars.selectibleWidgets.indexOf(props.widgetID.split("-")[0])>-1){
             highlight.value=!highlight.value;
@@ -135,6 +135,7 @@
   }
 
   .header-icon {
+    cursor: pointer;
     height: 18px;
     opacity: 0;
     transform: translateY(5px);

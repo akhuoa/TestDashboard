@@ -31,7 +31,9 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
   const addOptionsDataItems = (name:string,value:any)=>{
       optionsData.value.push({name,value})
   }
-
+  const clearOptionsDataItems = ()=>{
+    optionsData.value = [];
+  }
   const setImageArray = (newArray: SparcImageObject[]) => {
     if (!Array.isArray(newArray)) {
       console.error("setImageArray expects an array.");
@@ -75,6 +77,7 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
     setBiolucidaPath,
     setImageArray,
     setSelectedImage,
-    addOptionsDataItems
+    addOptionsDataItems,
+    clearOptionsDataItems
  }
 })

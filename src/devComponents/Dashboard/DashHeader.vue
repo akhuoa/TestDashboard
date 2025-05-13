@@ -21,8 +21,11 @@
       </div>
     </div>
     <div v-else
-      class="dash-header-hide content-header tw-w-100 tw-items-center tw-justify-between tw-absolute">
-      <slot></slot>
+      class="dash-header-hide content-header">
+      <div class="header-slot-icon">
+        <slot></slot>
+      </div>
+
     </div>
 </template>
 <script setup>
@@ -72,16 +75,14 @@ Feature: Click To Manually Edit Text
   .editing-div{
     width:150px;
   }
-  .header-slot-icon{
+}
+.header-slot-icon{
     position: absolute;
     top: 5px;
     right: 5px;
   }
-}
 .dash-header-hide{
-  height: 18px;
-  display: flex;
-  flex-direction: row-reverse;
+
 }
 .dash-header-visible{
   min-height: 40px;
