@@ -1,6 +1,6 @@
 {
   "name": "sparc-dashboard-beta",
-  "version": "0.4.24",
+  "version": "0.4.25-test",
   "author": "Sam Kraft (https://Sparc.Science)",
   "private": false,
   "type": "module",
@@ -34,8 +34,8 @@
     "element-plus": "^2.8.4"
   } ,
   "dependencies": {
-    "@abi-software/flatmapvuer": "1.7.4",
-    "@abi-software/scaffoldvuer": "^1.8.0",
+    "@abi-software/flatmapvuer": "1.9.0-beta.2",
+    "@abi-software/scaffoldvuer": "1.9.0-beta.1",
     "@element-plus/icons-vue": "^2.3.1",
     "@tsconfig/node21": "^21.0.1",
     "axios": "^1.6.7",

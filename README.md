@@ -3,6 +3,8 @@ The test dashboard is part of the Sparc Portal and is meant to compare various v
 
 [See LATEST DEMO](https://sparc-app-2-dev-features-2a5a06b8ea5c.herokuapp.com/apps/dashboard)
 
+NPM - https://www.npmjs.com/package/element-plus?activeTab=readme
+
 ## Latest Version
     "sparc-dashboard-beta": "^0.4.3",
 

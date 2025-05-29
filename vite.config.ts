@@ -24,12 +24,15 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       // Externalizing Vue, Pinia, and Element Plus
-      external: ['vue', 'pinia', 'element-plus'],
+      external: ['vue', 'pinia', 'element-plus', "@abi-software/flatmapvuer",
+      "@abi-software/scaffoldvuer"],
       output: {
         globals: {
           vue: 'Vue',
           pinia: 'Pinia',
           'element-plus': 'ElementPlus',
+          "@abi-software/flatmapvuer" : "flatmapvuer",
+          "@abi-software/scaffoldvuer": "scaffoldvuer"
         },
       },
     },

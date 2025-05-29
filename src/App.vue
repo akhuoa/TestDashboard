@@ -30,7 +30,7 @@ const dashboardOptions =ref({
   }
 })
 //component name works more like a header and might need to be renamed throughout the ap
-const debug = true;
+const debug = false;
 const dBItems = debug ? [
   { id: "TextWidget-1", x: 0, y: 0, h: 1, w:4, componentName:"Ted",component:"TextWidget",hideHeader:true, Props:{displayText:"Dastaset Overview"} },
   { id: "TextWidget-2", x: 0, y: 1, h: 2, w:2, componentName:"Bob",component:"TextWidget",Props:{bindedKey:"FileCount"} },

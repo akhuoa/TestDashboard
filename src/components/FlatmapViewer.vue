@@ -47,7 +47,7 @@ defineOptions({
     const locationLabel = ref("None selected");
     const locationStore = useLocationStore();
 
-function FlatmapSelected(data){
+function FlatmapSelected([data]){
     if (data.eventType === 'click') {
     resetLocation();
     clearMarkers();
