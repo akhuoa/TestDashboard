@@ -19,7 +19,7 @@
     </div>
 </template>
 <script setup>
-  import {ref, onMounted, onUnmounted, inject,watch} from "vue";
+  import {ref, onMounted, onUnmounted, computed,watch} from "vue";
   import {useGlobalVarsStore} from "../stores/globalVars"
   import { Api } from "../services";
 
@@ -34,15 +34,8 @@
   })
 
   const GlobalVars = useGlobalVarsStore();
-  const selectedImage = ref("");
+  const selectedImage = computed(()=>GlobalVars.SELECTED_IMAGE);
 
-  //instead listen for image selected instead of just the link
-  watch(() => GlobalVars.SELECTED_IMAGE, (newVal, oldVal) => {
-    selectedImage.value = newVal
-    if(!newVal?.biolucidaPath){
-      getBiolucidaLink()
-    }
-},{deep:true})
 
 //get Biolucida url on update
 //this will only happen if the url is not provided by the FLI
@@ -65,12 +58,15 @@ const getBiolucidaLink = async ()=>{
       console.error("couldn't fetch biolucida link: "+e);
   }
 }
-  onMounted(() => {
-    GlobalVars.mbfViewerCount++;
-  });
-  onUnmounted(()=>{
-    GlobalVars.mbfViewerCount--;
-  })
+  watch(
+  selectedImage,
+  (newVal) => {
+    if (newVal && !newVal.biolucidaPath) {
+      getBiolucidaLink();
+    }
+  },
+  { immediate: true }
+);
 
 </script>
 <style scoped lang="scss">

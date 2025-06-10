@@ -25,7 +25,7 @@
       :reactive-source-value = "props.bindedKey"
       :manual-entry-value="textContent"
       :hide-header-value="props.hideHeader"
-      @close-dialog="settingsVisible = false"
+      @close-dialog="handleCloseDialog()"
       @update-text-var="(x)=>updateTextVariable(x)"
       >
   </TextWidgetSettings>
@@ -89,7 +89,10 @@ SETTINGS
   function openSettings(){
     settingsVisible.value=true
   }
-
+  function handleCloseDialog(){
+    settingsVisible.value = false;
+    globalVars.saveToLocalStorage();
+  }
   // called when settings is updated
   function updateTextVariable({manualEdit,reactiveSource, hideHeader}){
     const dashItem = globalVars.getDashItem(props.widgetID);

@@ -8,6 +8,7 @@
 <script setup>
   import { ref, watch, computed} from "vue";
   import { useGlobalVarsStore } from '../../stores/globalVars'
+import { Dataset } from "../../assets/Model";
     const GlobalVars = useGlobalVarsStore();
 
     defineOptions({
@@ -19,26 +20,33 @@
     }
   })
 
+  const DatasetID = computed(() => GlobalVars.DATASET_ID)
+  const FlatmapLocation = computed(() => GlobalVars.FLATMAP_LOCATION) 
+  const MBFImageName = computed(() => GlobalVars.MBF_IMAGE_NAME)
+const filterEntries = [
+  { label: "Dataset",        value: DatasetID},
+  { label: "Vagal Location", value: FlatmapLocation},
+  { label: "Selected Image", value: MBFImageName},
+];
+const filterOrder = filterEntries.map(e => e.label);
 const ActiveFilters = ref(new Map());
 
-//watchers
-watch(() => GlobalVars.DATASET_ID, (newVal, oldVal) => {
-    const orderNum = 0;
-    ActiveFilters.value.delete(filterOrder[orderNum])
-    ActiveFilters.value.set(filterOrder[orderNum],newVal)
-    })
-watch(() => GlobalVars.FLATMAP_LOCATION, (newVal, oldVal) => {
-    const orderNum = 1;
-    ActiveFilters.value.delete(filterOrder[orderNum])
-    ActiveFilters.value.set(filterOrder[orderNum],newVal)
-})
-watch(() => GlobalVars.MBF_IMAGE_NAME, (newVal, oldVal) => {
-    const orderNum = 2;
-    ActiveFilters.value.delete(filterOrder[orderNum])
-    ActiveFilters.value.set(filterOrder[orderNum],newVal)
-})
+// Initialize Map
+filterEntries.forEach(({ label, value:entry }) => {
+    if(entry.value){
+        ActiveFilters.value.set(label, entry);
+    }
+});
 
-const filterOrder = ["Dataset", "Vagal Location", "Selected Image"]
+
+//watchers
+filterEntries.forEach(({ label, value }) => {
+  watch(value, (newVal) => {
+    ActiveFilters.value.set(label, newVal);
+  });
+});
+
+
 
 </script>
 <style scoped lang="scss">

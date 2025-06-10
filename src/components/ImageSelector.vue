@@ -6,6 +6,7 @@
         <img :src=imgPath>
     </div>
     <el-table 
+    ref="tableInstance"
     :data="TableData" 
     class="table-of-images tw-text-sm"
     highlight-current-row
@@ -19,48 +20,58 @@
 
 </template>
 <script setup>
-    import { ref, inject, nextTick, watch } from "vue";
+    import { ref, computed, watch, onMounted } from "vue";
     import {useGlobalVarsStore} from "../stores/globalVars"
+import { nextTick } from "process";
     const GlobalVars = useGlobalVarsStore();
 
     defineOptions({
         inheritAttrs: false
     })    
     
+    const tableInstance = ref(null)
     const imgPath = ref(null);
-    const TableData = ref();
-
     const widgetName = ref('MUSE Image Selector');
+    const filteredImages = computed(()=>GlobalVars.DASH_IMAGE_ARRAY)
+    const TableData = ref(buildTableSPARC(filteredImages.value))
+    const currentRow = computed(()=>GlobalVars.CURRENT_ROW);
+
+    onMounted(()=>{
+        nextTick(()=>{
+            const tbc = TableData.value.find(x=>x.id==currentRow.value.id)
+            tableInstance.value.setCurrentRow(tbc)
+        })
+
+    })
 
 
-const currentRow = ref();
-
-const handleCurrentChange = (val, index) => {
-    currentRow.value = val;
-    const selectedImage =  GlobalVars.DASH_IMAGE_ARRAY.find(x => x.packageId === val.id)
-    GlobalVars.setSelectedImage(selectedImage) 
+const handleCurrentChange = (row, index) => {
+    if(!row){return}
+    const selectedImage =  filteredImages.value.find(x => x.packageId === row.id)
+    GlobalVars.setSelectedImage(selectedImage,row) 
+    GlobalVars.saveToLocalStorage();
 }
 
-watch(() => GlobalVars.DASH_IMAGE_ARRAY, (newVal, oldVal) => {
-    //convert to non-reactive object before passing it through the model. this avoids unexpected behavior
-    //const imageArray = JSON.parse(JSON.stringify(newVal));
-    TableData.value = buildTableSPARC(newVal);
+watch(filteredImages, 
+    (newVal, oldVal) => {
+        TableData.value = buildTableSPARC(newVal);
 })
 
 function buildTableSPARC(imageArray){
-        let _tempArr=[];
-        imageArray.forEach((img)=>{
-            let column = {
-                description: img.description,
-                sex: img.sex,
-                age:img.ageRange,
-                id:img.packageId,
-                sparcId:img.sparcID
-            }
-            _tempArr.push(column);
-        })
-        return _tempArr;
-    }
+    if(!imageArray?.length){return []}
+    let _tempArr=[];
+    imageArray.forEach((img)=>{
+        let column = {
+            description: img.description,
+            sex: img.sex,
+            age:img.ageRange,
+            id:img.packageId,
+            sparcId:img.sparcID
+        }
+        _tempArr.push(column);
+    })
+    return _tempArr;
+}
 </script>
 <style scoped>
 :deep(.el-table__row){

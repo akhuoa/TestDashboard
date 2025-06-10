@@ -16,7 +16,7 @@
 
 </template>
 <script setup>
-  import { ref, inject, nextTick} from "vue";
+  import { ref, computed, nextTick} from "vue";
   import {FlatmapVuer, MultiFlatmapVuer} from '@abi-software/flatmapvuer';
   import { useGlobalVarsStore } from '../stores/globalVars'
   import { useLocationStore} from "../stores/locationSelect";
@@ -38,14 +38,15 @@ defineOptions({
   const GlobalVars = useGlobalVarsStore();
   const disableFlatmapUI = true;
   let FlatmapReady = false;
+  const flatmapLocation = computed(()=>GlobalVars.FLATMAP_LOCATION)
 
   const widgetName = ref('Flatmap Selector');
   const emitter = inject('emitter');
   const flatmapRef = ref('flatmapRef');
 
-    let locationId = "";
-    const locationLabel = ref("None selected");
-    const locationStore = useLocationStore();
+let locationId = "";
+const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
+const locationStore = useLocationStore();
 
 function FlatmapSelected([data]){
     if (data.eventType === 'click') {
@@ -60,6 +61,7 @@ function FlatmapSelected([data]){
     //const locationMinMax = addBufferToMinMax(locationId);
     //send to image selector
     locationStore.getLocationFromMinMax(locationId-.1,locationId+.1)
+    GlobalVars.saveToLocalStorage()
     }
 }
 function debugCall(){

@@ -4,16 +4,16 @@
     <div v-if="!hideHeader" class="dash-header tw-max-h-screen tw-flex tw-flex-col">
       <span class="tw-float-left tw-m-1 button">
         <el-button class="edit-button"
-        @click="staticMode=!staticMode">
+        @click="handleEditGrid()">
         {{ editGridButton }}
       </el-button>
       </span>
       <FilterWidget></FilterWidget>
     </div>
-    <div v-else class="tw-h-10 dash-header">
+    <div v-else class="tw-h-10 dash-header">x
       <span class="tw-float-left tw-m-1">
         <el-button class="edit-button"
-        @click="staticMode=!staticMode">
+        @click="handleEditGrid()">
         {{ editGridButton }}
         </el-button>
       </span>
@@ -32,12 +32,6 @@
             @click="addNewWidget(item)">
           </el-option>
         </el-select>
-        <el-button v-if="debug"
-        type="default"
-        @click="saveDashboard()"
-        disabled >
-        Save Dashboard
-      </el-button>
     </div>
   </el-col>
   <!-- Grid Stack JS -->
@@ -49,7 +43,8 @@
         :gs-h="w.h"
         :gs-id="w.id"
         :id="w.id"
-        :key="w.id">
+        :key="w.id"
+        :props ="w.Props">
           <ItemWidget
           :widgetID="w.id"
           @remove-widget="removeWidget(w.id)"
@@ -65,11 +60,9 @@
   </div>
 </template>
 
-
-
 <script setup>
 
-import { ref, onBeforeMount, onMounted, nextTick, computed, onUpdated, watch, provide} from 'vue';
+import { ref, onBeforeMount, onMounted, nextTick,  watch} from 'vue';
 import { GridStack } from 'gridstack';
 import FilterWidget from "../FilterWidget/FilterWidget.vue"
 import ItemWidget from './ItemWidget.vue'
@@ -103,29 +96,21 @@ const root = ref(null);
 const { DASHBOARD_ITEMS: DashboardItems } = storeToRefs(_globalVars);
 
 let staticMode = ref(true);
-getItemsFromLS();
 let ComponentListOptions = _globalVars.componentList;
 let NewComponent = {};
 let NextId = props.dBItems.length+1;
 
 onBeforeMount(() => {
-    _globalVars.DASHBOARD_ITEMS= props.dBItems;
+    const savedDash = getItemsFromLS()
+    _globalVars.DASHBOARD_ITEMS= savedDash.length>0? savedDash: props.dBItems;
+    _globalVars.loadFromLocalStorage();
   });
   onMounted(() => {
-    addOptionsToGlobalVars();
     initGridStack();
+    addOptionsToGlobalVars();
+
   });
-  onUpdated(() => {
 
-})
-
-//retrieve dataset as json ------------------------------- - - - - - - - --------- - -- - -- - - -
-function retrieveDataset(){
-  fetch('./dataByLocation.json')
-    .then((response) => response.json())
-    .then((json) => _DatasetImgs.value = Object.assign(new Dataset(json)),
-     );
-}
 
 //add gridstack specific events here - - - - - - --  -- -- - - -- - --  -- - - -----  -  - - - -
 function initGridStack(){
@@ -184,28 +169,31 @@ function removeWidget(widget) {
     const selector = `#${widget}`;
     Grid.removeWidget(selector, false);
   }
-function saveDashboard(){
-  const gridItems = Grid.save();
-  gridItems.forEach(item => {
-    item.component = item.id.split("-")[0];
-    item.componentName = item.component;
-  });
-  window.localStorage.setItem("DashboardItems",JSON.stringify(gridItems));
+
+function handleEditGrid(){
+  staticMode.value=!staticMode.value;
+  if(staticMode.value){
+    saveDashboard()
+    _globalVars.saveToLocalStorage()
+  }
 }
+function saveDashboard() {
+  const gridItems = Grid.save();
+  const merged = gridItems.map(fromGrid => {
+    const dashItems = DashboardItems.value.find(DI => DI.id === fromGrid.id) || {};
+    const overrides = (({ x, y, h, l }) => ({ x, y, h, l }))(fromGrid);
+    return { ...dashItems, ...overrides };
+  });
+  window.localStorage.setItem("DashboardItems", JSON.stringify(merged));
+}
+
 function getItemsFromLS(){
     let dashItems = [];
-    let nav = {};
 
     if(isValidJSON(window.localStorage.getItem("DashboardItems"))){
       dashItems = JSON.parse(window.localStorage.getItem("DashboardItems"));
     }
-    nav = dashItems.find(item => item.id === "SubjectNav");
-
-    let navIndex = dashItems.indexOf(nav);
-    if(navIndex!==-1){
-      dashItems.splice(navIndex,1);
-    }
-    DashboardItems.value = dashItems;
+    return dashItems;
 }
 
 function isValidJSON(str) {
