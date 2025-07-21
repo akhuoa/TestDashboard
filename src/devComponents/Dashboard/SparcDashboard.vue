@@ -37,6 +37,7 @@
   <!-- Grid Stack JS -->
     <div  ref="root" class="grid-stack tw-h-screen">
       <div v-for="(w) in DashboardItems" class="grid-stack-item"
+        :ref="el => widgetRefs[w.id] = el"
         :gs-x="w.x"
         :gs-y="w.y"
         :gs-w="w.w"
@@ -44,15 +45,20 @@
         :gs-id="w.id"
         :id="w.id"
         :key="w.id"
-        :props ="w.Props">
+        :props ="w.Props"
+        :gs-locked="w.Props?.locked"
+        :gs-no-move="w.Props?.locked"
+        :gs-no-resize="w.Props?.locked">
           <ItemWidget
           :widgetID="w.id"
           @remove-widget="removeWidget(w.id)"
+          @toggle-lock="toggleWidgetLock"
           :static-mode="staticMode"
           :componentTag="w.component"
           :componentProperties="w.Props"
           :componentName="w.componentName"
-          :hideWidgetsHeader="w.hideHeader">
+          :hideWidgetsHeader="w.hideHeader"
+          :is-locked="w.Props?.locked">
           </ItemWidget>
       </div>
     </div>
@@ -62,7 +68,7 @@
 
 <script setup>
 
-import { ref, onBeforeMount, onMounted, nextTick,  watch} from 'vue';
+import { ref, onBeforeMount, onMounted, nextTick, watch, reactive} from 'vue';
 import { GridStack } from 'gridstack';
 import FilterWidget from "../FilterWidget/FilterWidget.vue"
 import ItemWidget from './ItemWidget.vue'
@@ -128,6 +134,7 @@ function initGridStack(){
     }
     Grid = GridStack.init(options);
     Grid.setStatic(staticMode.value)
+    _globalVars.gridInstance = Grid;
 }
 
 //Add Data to Global Vars for reactivity and Global Scoping -----------------------------
@@ -170,6 +177,18 @@ function removeWidget(widget) {
     Grid.removeWidget(selector, false);
   }
 
+const widgetRefs = reactive({});
+function toggleWidgetLock({id,isLocked}){
+  const el = widgetRefs[id];
+  if (el && Grid) {
+    Grid.update(el, {
+      locked:!isLocked,
+      noMove: !isLocked,
+      noResize: !isLocked
+    });
+  }
+  _globalVars.toggleWidgetLock(id);
+}
 function handleEditGrid(){
   staticMode.value=!staticMode.value;
   if(staticMode.value){
@@ -181,7 +200,7 @@ function saveDashboard() {
   const gridItems = Grid.save();
   const merged = gridItems.map(fromGrid => {
     const dashItems = DashboardItems.value.find(DI => DI.id === fromGrid.id) || {};
-    const overrides = (({ x, y, h, l }) => ({ x, y, h, l }))(fromGrid);
+    const overrides = (({ x, y, h, w }) => ({ x, y, h, w }))(fromGrid);
     return { ...dashItems, ...overrides };
   });
   window.localStorage.setItem("DashboardItems", JSON.stringify(merged));

@@ -4,8 +4,9 @@ import { SparcImageObject } from '../devComponents/ImageSelector/ImageModel';
 
 export const useGlobalVarsStore = defineStore('globalVars', () => {
   //global objects
+  //gridstack.js instance
+  const gridInstance = ref(null);
   const componentList = ref([""]);
-  // const navigatorType = ref("LocationNav");//default 
   const DATASET_ID = ref("");
   const optionsData = ref([])
   const DASHBOARD_ITEMS = ref([]);
@@ -19,15 +20,28 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
   const MBF_IMAGE_NAME = ref("");
 
   //filtered metadata
-  const SUBJECT_SEX = ref("");
-  const SUBJECT_AGE = ref(null);
+
+  const SELECTED_SUBJECTS = ref([])
   const CURRENT_ROW = ref({})
     //BiolucidaViewer.vue
   const SELECTED_IMAGE = ref(null);
 
-  //remove after adding lock functionality
-  const selectibleWidgets=["BiolucidaViewer"];
-  const mbfViewerCount = ref(0);
+
+  //scaffold
+  const SCAFFOLD_URL = ref("https://api.sparc.science//s3-resource/426/files/derivative/sub-M000/L/060-visualization/leftHumanVagus_metadata.json")
+  //const SCAFFOLD_URL = ref("https://mapcore-bucket1.s3-us-west-2.amazonaws.com/others/29_Jan_2020/heartICN_metadata.json")
+
+  const clearAllFilters = ()=>{
+    DATASET_ID.value = "";
+    DASH_IMAGE_ARRAY.value = [];
+    FLATMAP_LOCATION.value = "";
+    MBF_IMAGE_NAME.value = "";
+    SELECTED_SUBJECTS.value = [];
+    CURRENT_ROW.value = {};
+    SELECTED_IMAGE.value = null;
+    SCAFFOLD_URL.value = "";
+    saveToLocalStorage()
+  }
 
   //GETTERS
   const getDashItem =(widgetId:string)=>{
@@ -64,20 +78,26 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
       console.warn("No image selected. Cannot set Biolucida path.");
     }
   };
+
+  const toggleWidgetLock = (widgetId: string) => {
+    const widget = DASHBOARD_ITEMS.value.find(w => w.id === widgetId);
+    if (widget) {
+      widget.Props = widget.Props || {};
+      widget.Props.locked = !widget.Props.locked;
+    }
+  }
+
   const saveToLocalStorage = ()=>{
     const data = {
      // DASHBOARD_ITEMS: DASHBOARD_ITEMS.value,
-     // componentList: componentList.value,
+      SELECTED_SUBJECTS: SELECTED_SUBJECTS.value,
       CURRENT_ROW: CURRENT_ROW.value,
       DASH_IMAGE_ARRAY: DASH_IMAGE_ARRAY.value,
       DATASET_ID: DATASET_ID.value,
       FLATMAP_LOCATION: FLATMAP_LOCATION.value,
       MBF_IMAGE_NAME: MBF_IMAGE_NAME.value,
-      SUBJECT_AGE: SUBJECT_AGE.value,
-      SUBJECT_SEX: SUBJECT_SEX.value,
       SELECTED_IMAGE: SELECTED_IMAGE.value,
-      optionsData: optionsData.value,
-      mbfViewerCount: mbfViewerCount.value
+      optionsData: optionsData.value
     };
   
     localStorage.setItem("dashboard-globalVarsStore", JSON.stringify(data));
@@ -88,19 +108,15 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
   
     try {
       const data = JSON.parse(stored);
-  
       //if ('DASHBOARD_ITEMS' in data) DASHBOARD_ITEMS.value = data.DASHBOARD_ITEMS;
-      //if ('componentList' in data) componentList.value = data.componentList;
+      if('SELECTED_SUBJECTS' in data) SELECTED_SUBJECTS.value = data.SELECTED_SUBJECTS;
       if ('CURRENT_ROW' in data) CURRENT_ROW.value = data.CURRENT_ROW;
       if ('DASH_IMAGE_ARRAY' in data) DASH_IMAGE_ARRAY.value = data.DASH_IMAGE_ARRAY;
       if ('DATASET_ID' in data) DATASET_ID.value = data.DATASET_ID;
       if ('FLATMAP_LOCATION' in data) FLATMAP_LOCATION.value = data.FLATMAP_LOCATION;
       if ('MBF_IMAGE_NAME' in data) MBF_IMAGE_NAME.value = data.MBF_IMAGE_NAME;
-      if ('SUBJECT_AGE' in data) SUBJECT_AGE.value = data.SUBJECT_AGE;
-      if ('SUBJECT_SEX' in data) SUBJECT_SEX.value = data.SUBJECT_SEX;
       if ('SELECTED_IMAGE' in data) SELECTED_IMAGE.value = data.SELECTED_IMAGE;
       if ('optionsData' in data) optionsData.value = data.optionsData;
-      if ('mbfViewerCount' in data) mbfViewerCount.value = data.mbfViewerCount;
     } catch (error) {
       console.error("Failed to parse globalVarsStore from localStorage:", error);
     }
@@ -115,19 +131,20 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
     DATASET_ID, 
     FLATMAP_LOCATION,
     MBF_IMAGE_NAME,
-    selectibleWidgets,
-    mbfViewerCount,
-    SUBJECT_AGE,
-    SUBJECT_SEX,
+    SELECTED_SUBJECTS,
     SELECTED_IMAGE,
     optionsData,
+    SCAFFOLD_URL,
+    gridInstance,
     getDashItem,
+    toggleWidgetLock,
     setBiolucidaPath,
     setImageArray,
     setSelectedImage,
     addOptionsDataItems,
     clearOptionsDataItems,
     saveToLocalStorage,
-    loadFromLocalStorage
+    loadFromLocalStorage,
+    clearAllFilters
  }
 })

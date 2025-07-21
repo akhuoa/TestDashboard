@@ -1,13 +1,12 @@
 <script setup>
 import { ScaffoldVuer } from '@abi-software/scaffoldvuer';
+import { useGlobalVarsStore } from '../stores/globalVars';
+import {ref, computed} from 'vue'
 
-import {ref} from 'vue'
+const GlobalVars = useGlobalVarsStore();
 
-const ScaffoldSelected = function(annotation) {
-    console.log(annotation);
-}
 
-const url = ref("https://mapcore-bucket1.s3-us-west-2.amazonaws.com/others/29_Jan_2020/heartICN_metadata.json")
+const url = computed(()=>GlobalVars.SCAFFOLD_URL)
 const helpMode =ref(false);
 const displayMarkers= ref(true)
 const displayMinimap = ref(false)

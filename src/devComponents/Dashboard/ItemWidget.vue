@@ -1,14 +1,15 @@
 <template>
-            <div ref="instance" class="grid-stack-item-content">
+            <div ref="instance" class="grid-stack-item-content" :class="{'locked-widget':isLocked}">
                 <component 
                 v-slot="slotProps" 
                 class="widget-body" 
                 :class="{'widget-body-no-head':hideHeader}"
                 :widgetID="widgetID"
                 :is="componentTag" 
-                :listening="highlight" 
                 :hideHeader="hideHeader"
-                v-bind="props.componentProperties">
+                v-bind="props.componentProperties"
+                :style="{ pointerEvents: widgetLocked ? 'none' : 'auto' }"
+                :isLocked="widgetLocked">
                     <DashHeader 
                     v-if="slotProps" 
                     :widgetName="props.componentName" 
@@ -27,10 +28,18 @@
                                     @click="icon.event">
                                 </component>
                             </el-tooltip>
-                            <el-icon v-if="!staticMode"
-                             class="item-widget-button"
-                             @click="$emit('removeWidget')"
-                             ><Close/></el-icon>
+                            <el-icon
+                                class="header-icon lock-toggle"
+                                @click="toggleLockWidget()">
+                                    <Lock v-if="widgetLocked"/>
+                                    <Unlock v-else/>
+                            </el-icon>
+                            <el-icon 
+                                v-if="!staticMode && !isLocked"
+                                class="item-widget-button"
+                                @click="$emit('removeWidget')"
+                                ><Close/>
+                            </el-icon>
                             
                         </div>
                     </DashHeader>
@@ -38,17 +47,14 @@
             </div>
 </template>
 <script setup>
-    import CloseIcon from '../../components/icons/CloseIcon.vue';
     import DownloadIcon from '../../components/icons/DownloadIcon.vue'
-    import { Edit } from '@element-plus/icons-vue';
-    import { ref, watch} from 'vue';
+    import { ref, watch, computed} from 'vue';
     import { useGlobalVarsStore } from '../../stores/globalVars';
     import DashHeader from "./DashHeader.vue";
-    import { nextTick } from 'process';
     import { ElTooltip } from 'element-plus';
-    import { Close } from "@element-plus/icons-vue";
+    import { Close, Lock, Unlock } from "@element-plus/icons-vue";
     
-    const emit = defineEmits(['removeWidget']);
+    const emit = defineEmits(['removeWidget',"toggle-lock"]);
     const GlobalVars = useGlobalVarsStore();
     const props = defineProps({      
             widgetID:{
@@ -71,25 +77,33 @@
             //refactor to make hideHeader populated by getDashItem
             hideWidgetsHeader:{
                 type:Boolean
+            },
+            isLocked:{
+                type:Boolean,
+                default:false
             }
         })
-
-     const hideHeader = ref(null);
-     watch(()=> props.hideWidgetsHeader,(newVal)=>{
+    let instance = ref(null);
+    
+    const widgetLocked = ref(false)
+    watch(() => props.isLocked, (newVal) => {
+        widgetLocked.value = newVal;
+    }, { immediate: true });    
+    
+    const hideHeader = ref(null);
+    watch(()=> props.hideWidgetsHeader,(newVal)=>{
         hideHeader.value=newVal;
-     },{immediate:true})
+    },{immediate:true})
     
 //-----------------------------------------------------------------------------
-// hightlight functionslity
-    let instance = ref(null);
-    let highlight = ref(false)
-    //highlight function depricated for now
-    function selectWidget(){
-        if(GlobalVars.selectibleWidgets.indexOf(props.widgetID.split("-")[0])>-1){
-            highlight.value=!highlight.value;
-            instance.value.classList.toggle("focus-from-Img-View");
-        }
-    }
+function toggleLockWidget() {
+    emit('toggle-lock', {
+        id: props.widgetID,
+        isLocked:widgetLocked.value
+    });
+}
+
+
 
 </script>
 <style scoped lang="scss">
@@ -133,6 +147,13 @@
     &:hover {
     background: $backgroundBlocked; 
   }
+  &.locked-widget{
+    background-color: #f2f2f2;
+    .lock-toggle {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+  }
 
   .header-icon {
     cursor: pointer;
@@ -157,9 +178,7 @@
     width:100%;
     }
 }
-.focus-from-Img-View{
-        border:solid purple 2px !important; //light  purple
-    }
+
 .icon-wrapper{
     width:25px
 }
