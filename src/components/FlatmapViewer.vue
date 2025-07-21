@@ -41,7 +41,6 @@ defineOptions({
   const flatmapLocation = computed(()=>GlobalVars.FLATMAP_LOCATION)
 
   const widgetName = ref('Flatmap Selector');
-  const emitter = inject('emitter');
   const flatmapRef = ref('flatmapRef');
 
 let locationId = "";
