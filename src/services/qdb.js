@@ -13,7 +13,7 @@ const CreateBaseApiService = () => {
     //qdb graph: sends both the metric and aspect up and returns a list of instances that has a value to be plotted.
     getDataByAspect: (metric, aspect)=> axios.get(`${base}values/quant?aspect=${aspect}&desc-inst=${metric}`),
     //flatmap viewer: called on location selection. 0-1 index returns package ids within that index. 
-    getLocationMinMax:(min, max, subject)=>axios.get(`${base}objects?aspect=distance-via-reva-ft-sample-id-normalized-v1${subject}&value-quant-min=${min}&value-quant-max=${max}`),
+    getLocationMinMax:(min, max, subject)=>axios.get(`${base}objects?aspect=distance-vagus-normalized${subject}&value-quant-min=${min}&value-quant-max=${max}&union-cat-quant=false`),
     //not used in any widget
     getImagesByInstance:(dataset,instance)=>axios.get(`${base}objects?dataset=${dataset}&inst=${instance}`)
 

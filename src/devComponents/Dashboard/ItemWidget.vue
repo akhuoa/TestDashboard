@@ -130,6 +130,7 @@ function toggleLockWidget() {
 }
 :deep(.widget-body){
   height: calc( 100% - 40px );
+  overflow: scroll;
 }
 :deep(.widget-body-no-head){
     height: inherit;

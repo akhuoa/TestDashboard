@@ -19,7 +19,6 @@
   import { ref, computed, nextTick} from "vue";
   import {FlatmapVuer, MultiFlatmapVuer} from '@abi-software/flatmapvuer';
   import { useGlobalVarsStore } from '../stores/globalVars'
-  import { useLocationStore} from "../stores/locationSelect";
   import { ElTooltip } from "element-plus";
   import { InfoFilled } from "@element-plus/icons-vue";
 
@@ -43,7 +42,6 @@ defineOptions({
   
 let locationId = "";
 const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
-const locationStore = useLocationStore();
 
 function FlatmapSelected([data]){
     if (data.eventType === 'click') { 
@@ -55,12 +53,13 @@ function FlatmapSelected([data]){
     locationId = data.feature.location;
     //const locationMinMax = addBufferToMinMax(locationId);
     //send to image selector
-    locationStore.getLocationFromMinMax(locationId-.1,locationId+.1)
+    //min max needs to be a global var to be stored so that other calls can use it. for example when sub selector is updated. 
+    GlobalVars.setMinMax({min:locationId-.1,max:locationId+.1})
     GlobalVars.saveToLocalStorage()
     }
 }
 function debugCall(){
-    locationStore.getLocationFromMinMax(.1,.15);
+   // locationStore.getLocationFromMinMax(.1,.15);
 }
 function showMarker(){
     if (data.eventType === 'click') {      

@@ -14,14 +14,16 @@
         </div>
         </div>
         <div class="tw-h-screen tw-flex tw-justify-center">
-            <iframe class="tw-p-1 tw-w-screen" :src="selectedImage?.biolucidaPath" ></iframe>
+            <iframe class="tw-p-1 tw-w-screen" :src="biolucidaPath" ></iframe>
         </div>
     </div>
 </template>
 <script setup>
   import {ref, toRef, computed, watch} from "vue";
   import {useGlobalVarsStore} from "../stores/globalVars"
+  import { useLocationStore } from "../stores/locationSelect";
   import { Api } from "../services";
+  import { Base64  } from 'js-base64'
 
   const widgetName = ref('MBF Image Viewer');
   const emit = defineEmits(['selectWidget']);
@@ -35,6 +37,8 @@
   })
 
   const GlobalVars = useGlobalVarsStore();
+  const locationStore = useLocationStore();
+  const biolucidaPath = ref("");
   const selectedImage = computed(() => {
     if (props.isLocked && selectedImage.value) return selectedImage.value;
     return GlobalVars.SELECTED_IMAGE;
@@ -45,29 +49,33 @@
 //get Biolucida url on update
 //this will only happen if the url is not provided by the FLI
 //The link will then need to be called using the sparc id and package id
-const getBiolucidaLink = async ()=>{
-  const sparcId = selectedImage.value.sparcID;
-  const packageId = selectedImage.value.packageId;
+// const getBiolucidaLink = async ()=>{
+//   const sparcId = selectedImage.value.sparcID;
+//   const packageId = selectedImage.value.packageId;
 
-  let share_link = "";
-  let _response = {};
-  try{
-      await Api.biolucida.getShareLink(packageId,sparcId).then(response =>{
-          _response = response;
-      })
-      if (_response.status === 200) {
-          share_link= _response.data.share_link;
-          GlobalVars.setBiolucidaPath(share_link);
-      }
-  }catch(e){
-      console.error("couldn't fetch biolucida link: "+e);
-  }
-}
+//   let share_link = "";
+//   let _response = {};
+//   try{
+//       await Api.biolucida.getShareLink(packageId,sparcId).then(response =>{
+//           _response = response;
+//       })
+//       if (_response.status === 200) {
+//           share_link= _response.data.share_link;
+//           GlobalVars.setBiolucidaPath(share_link);
+//       }
+//   }catch(e){
+//       console.error("couldn't fetch biolucida link: "+e);
+//   }
+// }
+
 watch(
   selectedImage,
-  (newVal,oldVal) => {
-    if (newVal && !newVal.biolucidaPath) {
-      getBiolucidaLink();
+  async(newVal,oldVal) => {
+   
+    if (newVal?.biolucidaID!==oldVal?.biolucidaID) {
+      const code = encodeURIComponent(Base64.encode(`${newVal?.biolucidaID}-col-260`))
+      biolucidaPath.value = `https://sparc.biolucida.net/image?c=${code}`
+     //biolucidaPath.value = await locationStore.getBiolucidaLinkByID(newVal.biolucidaID);
     }
   },
   { immediate: true }

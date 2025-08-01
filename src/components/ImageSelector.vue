@@ -13,7 +13,7 @@
     @current-change="handleCurrentChange"
     >
             <el-table-column prop="description" label="Description"  width="200" show-overflow-tooltip/>
-            <el-table-column prop="sex" label="Sex"/>
+            <el-table-column prop="size" label="size" show-overflow-tooltip/>
             <el-table-column prop="age" label="Age"/>
      </el-table>
     </div>
@@ -64,9 +64,11 @@ function buildTableSPARC(imageArray){
         let column = {
             description: img.description,
             sex: img.sex,
+            loc:img.secondLocation,
             age:img.ageRange,
             id:img.packageId,
-            sparcId:img.sparcID
+            sparcId:img.sparcID,
+            size:img.size
         }
         _tempArr.push(column);
     })

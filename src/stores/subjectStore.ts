@@ -6,20 +6,20 @@ import { useGlobalVarsStore } from './globalVars';
 export const useSubjectStore = defineStore('subjectStore', () => {
 
     const GlobalVars = useGlobalVarsStore();
-    const DistinctSubjects = ref([]);
+    const AvailableSubjects = ref([]);
 
-    const GetDistinctSubjects = async()=>{
-        if(DistinctSubjects?.value.length){return}
+    const GetAvailableSubjects = async()=>{
+        if(AvailableSubjects?.value.length){return}
         try{
             await Api.qdb.getSubjects(GlobalVars.DATASET_ID).then(response =>{
                 const uniqueSubjects = Array.from(
                      new Set(response.data.result.map(obj => obj.subject))
                   );
-                  DistinctSubjects.value = getSubjectMetaData(uniqueSubjects);
+                AvailableSubjects.value = getSubjectMetaData(uniqueSubjects);
             })
         }
         catch(e){
-            console.error("could not get distinct subjects",e)
+            console.error("could not get available subjects",e)
         }
     }
     //Placeholder function for getting metadata from a subject
@@ -32,7 +32,7 @@ export const useSubjectStore = defineStore('subjectStore', () => {
     }
 
   return { 
-    DistinctSubjects,
-    GetDistinctSubjects
+    AvailableSubjects,
+    GetAvailableSubjects
  }
 })
