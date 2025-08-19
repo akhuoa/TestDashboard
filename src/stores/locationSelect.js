@@ -8,6 +8,7 @@ import { TableObject} from "../devComponents/ImageSelector/ImageModel"
 
 export const useLocationStore = defineStore('locationSelected', () => {
   const GlobalVars = useGlobalVarsStore();
+  const IsLoading = ref(false)
 
 function getLocationFromMinMax(){
   const min = GlobalVars.MIN_MAX?.min;
@@ -18,26 +19,27 @@ function getLocationFromMinMax(){
 }
 //user has selected a location on the flatmap
 //use coord system from 0-1 to call qdb for a list of instances of images within that range 
-const getRegionMinMax = async(min, max)=>{
-    const subjects = GlobalVars.SELECTED_SUBJECTS
-    let _instance_list = {};
-    let _response = {};
-    let subjectParams = new URLSearchParams();
-    try{
-        subjects?.length ? subjects.forEach(subject => subjectParams.append('subject', subject.name)): null;
-        const paramString = "&"+subjectParams.toString();
-        await Api.qdb.getLocationMinMax(min,max,paramString).then(response =>{
-            _response = response;
-        })
-        if (_response.status === 200) {
-          _instance_list = _response.data.result;
-          handleMinMaxRequest(_instance_list);
-        }
-    }catch(e){
-        console.error("couldn't get min max region from QDB /n min: "+min +" max: "+ max);
-        console.log(e)
-    }
-}
+const getRegionMinMax = async (min, max) => {
+  const names = (GlobalVars.SELECTED_SUBJECTS ?? [])
+    .map(s => s?.name)
+    .filter((v) => !!v);
+
+  if (!names.length) {
+    console.warn('[getRegionMinMax] No subjects selected');
+    handleMinMaxRequest([]); 
+    return;
+  }
+
+  try {
+    IsLoading.value = true;
+    const response = await Api.qdb.getLocationMinMax(min, max, names);
+    handleMinMaxRequest(response);
+  } catch (e) {
+    console.error(`couldn't get min/max region from QDB\nmin: ${min} max: ${max}`, e);
+  }finally{
+    IsLoading.value=false;
+  }
+};
 function handleMinMaxRequest(results){
   let ImagesArray = results.filter(x=>x.id_type!=="quantdb"&& x.id);
   getMetadataForImages(ImagesArray);
@@ -103,6 +105,7 @@ const getBiolucidaLinkByID = async(id)=>{
 
   return { 
     getLocationFromMinMax,
-    getBiolucidaLinkByID
+    getBiolucidaLinkByID,
+    IsLoading
   }
 })

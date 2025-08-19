@@ -1,20 +1,25 @@
 <template>              
 <slot :widgetName="widgetName"></slot>
 <div  v-bind="$attrs">
-
-    <div class="fill">
-        <img :src=imgPath>
-    </div>
+    <div v-if="isLoading"
+    class="loader-wrap" >
+        <half-circle-spinner
+        :animation-duration="1000"
+        :size="60"
+        color="#8300BF"
+    />
+     </div>
     <el-table 
+    v-else
     ref="tableInstance"
     :data="TableData" 
     class="table-of-images tw-text-sm"
     highlight-current-row
     @current-change="handleCurrentChange"
-    >
-            <el-table-column prop="description" label="Description"  width="200" show-overflow-tooltip/>
-            <el-table-column prop="size" label="size" show-overflow-tooltip/>
-            <el-table-column prop="age" label="Age"/>
+    > 
+        <el-table-column prop="description" label="Description"  width="200" show-overflow-tooltip/>
+        <el-table-column prop="size" label="size" show-overflow-tooltip/>
+        <el-table-column prop="age" label="Age"/>
      </el-table>
     </div>
 
@@ -22,15 +27,19 @@
 <script setup>
     import { ref, computed, watch, onMounted } from "vue";
     import {useGlobalVarsStore} from "../stores/globalVars"
-import { nextTick } from "process";
+    import { useLocationStore } from "../stores/locationSelect";
+    import { nextTick } from "process";
+    import { HalfCircleSpinner } from 'epic-spinners'
     const GlobalVars = useGlobalVarsStore();
+    const LocationStore = useLocationStore();
 
     defineOptions({
         inheritAttrs: false
     })    
     
     const tableInstance = ref(null)
-    const imgPath = ref(null);
+    const isLoading = computed(() => LocationStore.IsLoading);
+
     const widgetName = ref('MUSE Image Selector');
     const filteredImages = computed(()=>GlobalVars.DASH_IMAGE_ARRAY)
     const TableData = ref(buildTableSPARC(filteredImages.value))
@@ -82,4 +91,9 @@ function buildTableSPARC(imageArray){
     .selector-body{
         
     }
+.loader-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+}
 </style>

@@ -108,6 +108,7 @@ let NextId = props.dBItems.length+1;
 
 onBeforeMount(() => {
     const savedDash = getItemsFromLS()
+    _globalVars.setOptionServices(props.options.services)
     _globalVars.DASHBOARD_ITEMS= savedDash.length>0? savedDash: props.dBItems;
     _globalVars.loadFromLocalStorage();
   });

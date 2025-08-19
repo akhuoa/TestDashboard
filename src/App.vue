@@ -18,8 +18,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch} from 'vue';
 import SparcDashboard from "./devComponents/Dashboard/SparcDashboard.vue"
-import { changeGlobalNodesTarget } from 'element-plus/es/utils';
-
+import * as siteConfig from '@/config/local.json'
+import algoliasearch from 'algoliasearch'
+const AlgoliaClient = algoliasearch(siteConfig?.ALGOLIA_APP_ID, siteConfig?.ALGOLIA_API_KEY);
 //options object ot pass the Dashboard. 
 const dashboardOptions =ref({
 //key value pairs that can be accessed to the user from high-configurable widgets. 
@@ -27,7 +28,15 @@ const dashboardOptions =ref({
     FileCount:20,
     Status:"Draft",
     CollaboaratorCount:0
-  }
+  },
+  services:{
+    AlgoliaClient,
+    AlgoliaConfig:{
+      apiKey:siteConfig?.ALGOLIA_API_KEY,
+      appID:siteConfig?.ALGOLIA_APP_ID,
+      indexName:siteConfig?.AlgoliaIndexName
+    }
+  },
 })
 //component name works more like a header and might need to be renamed throughout the ap
 const debug = false;

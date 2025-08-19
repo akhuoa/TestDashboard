@@ -32,14 +32,14 @@ import { onBeforeMount } from 'vue';
   })
 
   onBeforeMount(async()=>{
-    await  SubjectStore.GetAvailableSubjects() 
+    await  SubjectStore.GetDistinctSubjects() 
   })
   const GlobalVars = useGlobalVarsStore();
   const SubjectStore = useSubjectStore();
   const widgetName = ref('Sub Select');
  // const subjects = ref([{name:"Sub-349", sex:"F", age:"49"},{ name:"Sub-18-s", sex:"M", age:"54"},{ name:"Sub-0021", sex:"M", age:"73"},{ name:"Sub-245-0", sex:"F", age:"92"},{name:"Sub-34", sex:"F", age:"49"},{ name:"Sub-18", sex:"M", age:"54"},{ name:"Sub-002", sex:"M", age:"73"},{ name:"Sub-2452", sex:"F", age:"92"}])
 
- const subjects = computed(()=>SubjectStore.AvailableSubjects)
+ const subjects = computed(()=>SubjectStore.DistinctSubjects)
 
  const selectedSubjects = computed(()=>GlobalVars.SELECTED_SUBJECTS);
 

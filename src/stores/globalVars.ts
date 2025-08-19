@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, isReactive, isRef, markRaw, } from 'vue'
 import { defineStore } from 'pinia'
 import { SparcImageObject } from '../devComponents/ImageSelector/ImageModel';
 import { useLocationStore} from "../stores/locationSelect";
@@ -13,6 +13,7 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
   const DATASET_ID = ref("");
   const optionsData = ref([])
   const DASHBOARD_ITEMS = ref([]);
+  const Services = ref({})
  
   //component objects
     //ImageSelector.vue
@@ -66,6 +67,30 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
       SELECTED_SUBJECTS.value = subjectArray;
       locationStore.getLocationFromMinMax();
   }
+    const setOptionServices = (services:any)=>{
+      const sanitized =sanitizeServices(services);
+      Services.value = sanitized;
+    } 
+    const getServices = ()=>{
+      return Services.value;
+    }
+  
+    function sanitizeServices(input: any) {
+      const out: Record<string, any> = {};
+      if (!input || typeof input !== 'object') return out;
+  
+      for (const [k, v] of Object.entries(input)) {
+        // mark class/SDK instances as raw; copy plain data
+        if (v && typeof v === 'object' && !(isRef(v) || isReactive(v))) {
+          // heuristic: if it has methods / not a POJO, store raw
+          const isPlain = Object.getPrototypeOf(v) === Object.prototype;
+          out[k] = isPlain ? { ...v } : markRaw(v);
+        } else {
+          out[k] = v; // primitives, functions, etc.
+        }
+      }
+      return out;
+    }
   const setImageArray = (newArray: SparcImageObject[]) => {
     if (!Array.isArray(newArray)) {
       console.error("setImageArray expects an array.");
@@ -162,6 +187,8 @@ export const useGlobalVarsStore = defineStore('globalVars', () => {
     clearOptionsDataItems,
     saveToLocalStorage,
     loadFromLocalStorage,
-    clearAllFilters
+    clearAllFilters,
+    setOptionServices,
+    getServices
  }
 })
