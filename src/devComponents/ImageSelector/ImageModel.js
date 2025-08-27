@@ -1,3 +1,5 @@
+import { imageViewerProps } from "element-plus";
+
 class MBFImageObject {
     constructor(imageObj = {}){
         this.id = imageObj.id || "";
@@ -13,7 +15,7 @@ class MBFImageObject {
 //add anything from the dataset's FLI/metadata to this object that you want to surface
 export class SparcImageObject
 {
-    constructor(data, packageId){ //hits.hits[n]_source.dataset, hits.hits[n]_id
+    constructor(data, packageId,biolucidatId){ //hits.hits[n]_source.dataset, hits.hits[n]_id
       //  this.id = data.image_id; 
         this.name = data.item.name || "SPARC_Schwaber_HeartB_section39-section374.jpx"; //item.name - truncate it
         this.description = data.item? data.item.description: "Image file associated with the accompanying xml file, viewable in TissueMapper", //item.description
@@ -24,12 +26,14 @@ export class SparcImageObject
         this.sex = data.attributes&& data.attributes.subject&& data.attributes.subject.sex?data.attributes.subject.sex[0].value:"unknown";
         this.ageRange = data.attributes&& data.attributes.subject&& data.attributes.subject.ageCategory?data.attributes.subject.ageCategory[0].value:"unkown";
         this.biolucidaPath = "";
+        this.biolucidaID = biolucidatId;
+        this.secondLocation = data?.anatomy?.sampleSpecimenLocation?.[1]?.name ?? null;
     }
 }
 export class TableObject{
     constructor(array = {}){
         this.SparcImageArray = [];
-        array.forEach((img)=>img&&img._source&&img._source.dataset?this.SparcImageArray.push(new SparcImageObject(img._source.dataset,img._id)):"")
+        array.forEach((img)=>img&&img._source&&img._source.dataset?this.SparcImageArray.push(new SparcImageObject(img._source.dataset,img._id,img._source.external_records?.manifest?.input?.biolucida_id)):"")
         this.MBFImageObject = [];
         array.forEach((img)=>this.MBFImageObject.push(new MBFImageObject(img)))
     }

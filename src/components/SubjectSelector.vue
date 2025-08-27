@@ -49,12 +49,13 @@ import { onBeforeMount } from 'vue';
     }
 
     function toggleSelection(sub) {
-        const index = GlobalVars.SELECTED_SUBJECTS.findIndex(s => s.name === sub.name);
+        const index = selectedSubjects.value.findIndex(s => s.name === sub.name);
         if (index !== -1) {
-            GlobalVars.SELECTED_SUBJECTS.splice(index, 1);
+            selectedSubjects.value.splice(index, 1);
         } else {
-            GlobalVars.SELECTED_SUBJECTS.push(sub);
+            selectedSubjects.value.push(sub);
         }
+        GlobalVars.setSelectedSubject(selectedSubjects.value)
     }
 
 </script>

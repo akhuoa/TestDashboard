@@ -4,38 +4,42 @@ import { Api } from "../services";
 import {useGlobalVarsStore} from "../stores/globalVars"
 import { useSubjectStore } from './subjectStore';
 import { TableObject} from "../devComponents/ImageSelector/ImageModel"
-const GlobalVars = useGlobalVarsStore();
-const SubjectStore = useSubjectStore();
+
 
 export const useLocationStore = defineStore('locationSelected', () => {
+  const GlobalVars = useGlobalVarsStore();
+  const IsLoading = ref(false)
 
-function getLocationFromMinMax(min,max){
+function getLocationFromMinMax(){
+  const min = GlobalVars.MIN_MAX?.min;
+  const max = GlobalVars.MIN_MAX?.max;
   if(min && max){
     getRegionMinMax(min, max);
   }
 }
 //user has selected a location on the flatmap
 //use coord system from 0-1 to call qdb for a list of instances of images within that range 
-const getRegionMinMax = async(min, max)=>{
-    const subjects = GlobalVars.SELECTED_SUBJECTS
-    let _instance_list = {};
-    let _response = {};
-    let subjectParams = new URLSearchParams();
-    try{
-        subjects?.length ? subjects.forEach(subject => subjectParams.append('subject', subject.name)): null;
-        const paramString = "&"+subjectParams.toString();
-        await Api.qdb.getLocationMinMax(min,max,paramString).then(response =>{
-            _response = response;
-        })
-        if (_response.status === 200) {
-          _instance_list = _response.data.result;
-          handleMinMaxRequest(_instance_list);
-        }
-    }catch(e){
-        console.error("couldn't get min max region from QDB /n min: "+min +" max: "+ max);
-        console.log(e)
-    }
-}
+const getRegionMinMax = async (min, max) => {
+  const names = (GlobalVars.SELECTED_SUBJECTS ?? [])
+    .map(s => s?.name)
+    .filter((v) => !!v);
+
+  if (!names.length) {
+    console.warn('[getRegionMinMax] No subjects selected');
+    handleMinMaxRequest([]); 
+    return;
+  }
+
+  try {
+    IsLoading.value = true;
+    const response = await Api.qdb.getLocationMinMax(min, max, names);
+    handleMinMaxRequest(response);
+  } catch (e) {
+    console.error(`couldn't get min/max region from QDB\nmin: ${min} max: ${max}`, e);
+  }finally{
+    IsLoading.value=false;
+  }
+};
 function handleMinMaxRequest(results){
   let ImagesArray = results.filter(x=>x.id_type!=="quantdb"&& x.id);
   getMetadataForImages(ImagesArray);
@@ -55,8 +59,9 @@ const getMetadataForImages= async(images)=>{
         "query": {
           "terms": {
             "path_metadata.remote_id.keyword": 
-              //packageIdList
-              ["package:e5934c93-244a-4e84-84ec-4a931a30f6a4",  "package:2e294d01-a9d3-4e43-a798-89acb2004a68","package:3d2ff4af-0d5f-40e1-a041-22713ba5f81f","N:package:a1afeb63-073c-462e-9856-ced4e8c57382","N:package:d85f3014-6841-43fe-a173-120b9ac4fff6"]
+            //["package:132e580d-1103-49fe-b5e9-a3863451a6bc"]
+              packageIdList
+              //["package:132e580d-1103-49fe-b5e9-a3863451a6bc","package:e5934c93-244a-4e84-84ec-4a931a30f6a4",  "package:2e294d01-a9d3-4e43-a798-89acb2004a68","package:3d2ff4af-0d5f-40e1-a041-22713ba5f81f","N:package:a1afeb63-073c-462e-9856-ced4e8c57382","N:package:d85f3014-6841-43fe-a173-120b9ac4fff6"]
             
           }
         }
@@ -74,7 +79,7 @@ const getMetadataForImages= async(images)=>{
       console.log(e)
   }
 }
-  function parseDataIntoImageArray(images){
+  function parseDataIntoImageArray (images){
     try{
       //rename TableObject cuz it doesn't make sense anymore. it's a parsed image array
       const imageArray = new TableObject(images);
@@ -84,8 +89,23 @@ const getMetadataForImages= async(images)=>{
     }
   }
 
+const getBiolucidaLinkByID = async(id)=>{
+  try{
+    let _response = {}
+    await Api.biolucida.getShareLinkByID(id).then(response=>{
+      _response = response;
+    })
+    if(_response.status===200){
+      return _response.data?.link
+    }
+  }catch(e){
+    console.error("failed to get biolucida link by id. ex: "+e)
+  }
+}
 
-  const componentList = ref([""]);
-  const navigatorType = ref("LocationNav");//default 
-  return { navigatorType, getLocationFromMinMax }
+  return { 
+    getLocationFromMinMax,
+    getBiolucidaLinkByID,
+    IsLoading
+  }
 })

@@ -1,10 +1,12 @@
 import axios from "axios";
-const base = 'https://sparc.biolucida.net/api/v1/'
+const base = 'https://sparc.biolucida.net/api/v1/';
+const sparcBase = 'https://api.sparc.science/';
 
 const CreateBaseApiService = (resource) => {
   return {
     // Get a list of resources
     getShareLink: (packageID, id) => axios.get(`${base}imagemap/sharelink/N:package:${packageID}/${id}`),
+    getShareLinkByID:(id)=>axios.get(`${sparcBase}image_blv_link/${id}`)
   };
 };
 
