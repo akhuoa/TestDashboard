@@ -10,7 +10,7 @@
             <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
 
-        <FlatmapVuer ref="flatmapRef" uuid="0ea568ec-538d-52f3-a8e7-0437d844e1cf" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
+        <FlatmapVuer ref="flatmapRef" :uuid="flatmapUUID" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
 
     </div>
 
@@ -41,11 +41,16 @@ defineOptions({
   const widgetName = ref('Flatmap Selector');
   const flatmapRef = ref('flatmapRef');
 
+  let flatmapUUID = '0ea568ec-538d-52f3-a8e7-0437d844e1cf';
+  const testVagus = '37aaf9cd-cb6b-56df-b581-dcc01b0a0596'
+  flatmapUUID = testVagus
+
 let locationId = "";
 const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
 
 function FlatmapSelected([data]){
     if (data.eventType === 'click') {
+        console.log('click', data)
     resetLocation();
     clearMarkers();
     showMarker(data);
