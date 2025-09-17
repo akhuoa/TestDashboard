@@ -18,12 +18,14 @@
 <script setup lang="ts">
 import { ref, onMounted, watch} from 'vue';
 import SparcDashboard from "./devComponents/Dashboard/SparcDashboard.vue"
-import * as siteConfig from '@/config/local.json'
+// import * as siteConfig from '@/config/local.json'
+import { config } from './config'
 import algoliasearch from 'algoliasearch'
-const AlgoliaClient = algoliasearch(siteConfig?.ALGOLIA_APP_ID, siteConfig?.ALGOLIA_API_KEY);
-//options object ot pass the Dashboard. 
+const AlgoliaClient = algoliasearch(config.ALGOLIA_APP_ID, config.ALGOLIA_API_KEY);
+
+//options object ot pass the Dashboard.
 const dashboardOptions =ref({
-//key value pairs that can be accessed to the user from high-configurable widgets. 
+//key value pairs that can be accessed to the user from high-configurable widgets.
   globalData:{
     FileCount:20,
     Status:"Draft",
@@ -32,9 +34,9 @@ const dashboardOptions =ref({
   services:{
     AlgoliaClient,
     AlgoliaConfig:{
-      apiKey:siteConfig?.ALGOLIA_API_KEY,
-      appID:siteConfig?.ALGOLIA_APP_ID,
-      indexName:siteConfig?.AlgoliaIndexName
+      apiKey: config.ALGOLIA_API_KEY,
+      appID: config.ALGOLIA_APP_ID,
+      indexName: config.AlgoliaIndexName
     }
   },
 })
@@ -45,7 +47,7 @@ const dBItems = debug ? [
   { id: "TextWidget-2", x: 0, y: 1, h: 2, w:2, componentName:"Bob",component:"TextWidget",Props:{bindedKey:"FileCount"} },
   { id: "TextWidget-3", x: 2, y: 1, h: 2, w:2, componentName:"Karen",component:"TextWidget",Props:{bindedKey:"Status"}},
   { id: "TextWidget-4", x: 2, y: 0, h: 2, w:3, componentName:"Select Subject",component:"SubjectSelector"}
-] : 
+] :
 [
   { id: "SubjectSelector-1",component: "SubjectSelector",componentName: "Select Subject",h:2, w:5, x:0, y:0 },
   { id: "BiolucidaViewer-2", componentName:"MBF Viewer", component:"BiolucidaViewer", h:11, w:7, x:5, y:0},
