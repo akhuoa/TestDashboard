@@ -34,14 +34,14 @@
     polylabel "^2.0.1"
     uuid "^11.1.0"
 
-"@abi-software/flatmapvuer@1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.10.2.tgz#f460be9491a1d46c37643370c5138feca094496b"
-  integrity sha512-uEZmc6zqW5ytH7F5PfnSHzusakQrLuJ8C08wKm2o5yVDIfHHheK+4KxZT2hHT/eMq2vqUKXPyQuaiUaH5ijdDQ==
+"@abi-software/flatmapvuer@^1.11.3":
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.3.tgz#5fe2ab752d126689ab5551d23cf44cb1a5ea5aad"
+  integrity sha512-xMlnwaouoUyrO/cTKZdQOPEQLvPOV1JDpEMVlp+vZMYEEMrFJlDeTg0AfOEJ0NSB85TJ4f7ySpVV9fXtm0eGaA==
   dependencies:
-    "@abi-software/map-utilities" "^1.6.0"
+    "@abi-software/map-utilities" "1.7.2"
     "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     css-element-queries "^1.2.2"
     element-plus "2.8.4"
@@ -53,7 +53,7 @@
     "@esbuild/linux-x64" "0.25.3"
     "@rollup/rollup-linux-x64-gnu" "4.23.0"
 
-"@abi-software/map-utilities@^1.6.0":
+"@abi-software/map-utilities@1.7.2", "@abi-software/map-utilities@^1.6.0":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.2.tgz#72fbe8f0fa5110037aef9794d1dc5d01a9d6ccb1"
   integrity sha512-QFZk+TnZ4TYBFBiE+2UwpY0+l6wOdzTD4aTH/OkOwam+VBEGbHhXVoAUzslKNuQ1tja/GpskbiaU0MCdGyIdUQ==
@@ -94,6 +94,13 @@
     "@types/js-cookie" "^3.0.6"
     js-cookie "^3.0.5"
     rdflib "^2.2.32"
+
+"@abi-software/svg-sprite@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.2.tgz#5df468a00675bba71c8722c7ba734fc777725c79"
+  integrity sha512-pvNwhKgacuCC8tG30NTFOfPZBFZl9nzJiM2klGAm4wzQaZ52nuTKu1Xpj1mUxSeh/BenFHszybaaYT8x+NJuFg==
+  dependencies:
+    vue "^3.4.21"
 
 "@abi-software/svg-sprite@^1.0.1":
   version "1.0.1"
