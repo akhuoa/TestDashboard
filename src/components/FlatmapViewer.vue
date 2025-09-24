@@ -22,10 +22,20 @@
   import { ElTooltip } from "element-plus";
   import { InfoFilled } from "@element-plus/icons-vue";
 
-  let flatmapServer = 'https://mapcore-demo.org/devel/flatmap/v4/';
+defineOptions({
+        inheritAttrs: false
+    })
+  const props = defineProps({
+    listening:{
+            type:Boolean
+    },
+    flatmapServer:{
+            type:String,
+    },
+  })
+
+  let flatmapServer = props.flatmapServer || 'https://mapcore-demo.org/current/flatmap/v3/';
   let flatmapUUID = '0ea568ec-538d-52f3-a8e7-0437d844e1cf';
-  const testVagus = '37aaf9cd-cb6b-56df-b581-dcc01b0a0596'
-  flatmapUUID = testVagus
 
   // if there are url queries for flatmap server or uuid, use them for testing
   const urlParams = new URLSearchParams(window.location.search);
@@ -38,14 +48,6 @@
 
   FlatmapVuer.props.flatmapAPI.default = flatmapServer;
 
-defineOptions({
-        inheritAttrs: false
-    })
-  const props = defineProps({
-    listening:{
-            type:Boolean
-    }
-  })
   const debug = false;
   const GlobalVars = useGlobalVarsStore();
   const disableFlatmapUI = true;

@@ -1,5 +1,5 @@
 <template>
-    <SparcDashboard :dBItems="dBItems"  :options="dashboardOptions"></SparcDashboard>
+    <SparcDashboard :dBItems="dBItems"  :options="dashboardOptions" :flatmapServer="flatmapServer"></SparcDashboard>
     <el-button type="primary" @click="openDialog">Open Dialog</el-button>
     <el-dialog
       v-model="dialogVisible"
@@ -40,6 +40,7 @@ const dashboardOptions =ref({
     }
   },
 })
+const flatmapServer = 'https://mapcore-demo.org/devel/flatmap/v4/';
 //component name works more like a header and might need to be renamed throughout the ap
 const debug = false;
 const dBItems = debug ? [
