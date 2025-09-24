@@ -60,12 +60,19 @@ defineOptions({
 let locationId = "";
 const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
 
+// Only these two values of the `models` parameter will give a location that makes sense for a QDB query.
+const validModels = [
+    'http://uri.interlex.org/base/ilx_0789705',
+    'http://uri.interlex.org/base/ilx_0785628'
+];
+
 function FlatmapSelected(_data){
-    const [data] = _data;
-    if (data.eventType === 'click') {
-        console.log('click', _data)
+    const [data1] = _data; // first item to check eventType
+    if (data1.eventType === 'click') {
+    const data = _data.find((item) => item.feature && validModels.includes(item.feature.models));
     resetLocation();
     clearMarkers();
+    if (data) {
     showMarker(data);
 
     if(!data.feature.location || locationId===data.feature.location){return;}
@@ -77,6 +84,7 @@ function FlatmapSelected(_data){
     //min max needs to be a global var to be stored so that other calls can use it. for example when sub selector is updated.
     GlobalVars.setMinMax({min:locationId-.1,max:locationId+.1})
     GlobalVars.saveToLocalStorage()
+    }
     }
 }
 function debugCall(){
