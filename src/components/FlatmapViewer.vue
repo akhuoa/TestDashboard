@@ -32,10 +32,13 @@ defineOptions({
     flatmapAPI:{
             type:String,
     },
+    flatmapUUID:{
+            type:String,
+    }
   })
 
   let flatmapAPI = props.flatmapAPI || 'https://mapcore-demo.org/current/flatmap/v3/';
-  let flatmapUUID = '0ea568ec-538d-52f3-a8e7-0437d844e1cf';
+  let flatmapUUID = props.flatmapUUID || '0ea568ec-538d-52f3-a8e7-0437d844e1cf';
 
   // if there are url queries for flatmap server or uuid, use them for testing
   const urlParams = new URLSearchParams(window.location.search);
