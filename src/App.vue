@@ -40,7 +40,8 @@ const dashboardOptions =ref({
     }
   },
 })
-const flatmapAPI = 'https://mapcore-demo.org/devel/flatmap/v4/';
+// const flatmapAPI = 'https://mapcore-demo.org/devel/flatmap/v4/';
+const flatmapAPI = 'https://mapcore-demo.org/current/flatmap/v3/';
 //component name works more like a header and might need to be renamed throughout the ap
 const debug = false;
 const dBItems = debug ? [

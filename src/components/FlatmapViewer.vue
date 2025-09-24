@@ -10,7 +10,16 @@
             <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
 
-        <FlatmapVuer ref="flatmapRef" :uuid="flatmapUUID" class="tw-px-2 tw-py-2" :disableUI="disableFlatmapUI" entry="UBERON:0001759" v-on:resource-selected="FlatmapSelected"  v-on:ready="FlatmapReady"/>
+        <FlatmapVuer
+            ref="flatmapRef"
+            :key="selectedFlatmapUUID"
+            :uuid="selectedFlatmapUUID"
+            class="tw-px-2 tw-py-2"
+            :disableUI="disableFlatmapUI"
+            entry="UBERON:0001759"
+            v-on:resource-selected="FlatmapSelected"
+            v-on:ready="FlatmapReady"
+        />
 
     </div>
 
@@ -38,7 +47,7 @@ defineOptions({
   })
 
   let flatmapAPI = props.flatmapAPI || 'https://mapcore-demo.org/current/flatmap/v3/';
-  let flatmapUUID = props.flatmapUUID || '0ea568ec-538d-52f3-a8e7-0437d844e1cf';
+  let flatmapUUID = props.flatmapUUID || '588d9ef2-5d5a-5e04-b6c4-73c5310fb708';
 
   // if there are url queries for flatmap server or uuid, use them for testing
   const urlParams = new URLSearchParams(window.location.search);
@@ -62,6 +71,10 @@ defineOptions({
 
 let locationId = "";
 const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
+
+const selectedFlatmapUUID = computed(() => {
+    return GlobalVars.SELECTED_SUBJECTS.length > 0 ? GlobalVars.SELECTED_SUBJECTS[0].flatmapUUID : flatmapUUID;
+});
 
 // Only these two values of the `models` parameter will give a location that makes sense for a QDB query.
 const validModels = [
