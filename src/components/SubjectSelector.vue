@@ -61,6 +61,13 @@ const subjects = computed(()=>[...SubjectStore.DistinctSubjects, ...exampleSubje
         // clear previous selection to allow only one at a time for testing
         selectedSubjects.value = [];
         GlobalVars.setSelectedSubject([]);
+
+        // reset location
+        GlobalVars.FLATMAP_LOCATION = "";
+        GlobalVars.setMinMax({min: 0,max: 0})
+        GlobalVars.saveToLocalStorage()
+
+
         // const index = selectedSubjects.value.findIndex(s => s.name === sub.name);
         // if (index !== -1) {
         //     selectedSubjects.value.splice(index, 1);
