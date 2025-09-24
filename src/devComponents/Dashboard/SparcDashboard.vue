@@ -55,7 +55,7 @@
           @toggle-lock="toggleWidgetLock"
           :static-mode="staticMode"
           :componentTag="w.component"
-          :componentProperties="{...w.Props, flatmapServer: props.flatmapServer}"
+          :componentProperties="{...w.Props, flatmapAPI: props.flatmapAPI}"
           :componentName="w.componentName"
           :hideWidgetsHeader="w.hideHeader"
           :is-locked="w.Props?.locked">
@@ -89,7 +89,7 @@ const props = defineProps({
         type:Object,
         required:false
     },
-    flatmapServer:{
+    flatmapAPI:{
             type:String,
     },
   })
