@@ -4,14 +4,14 @@
     <div ref="instance" class="subject-selector">
         <el-card
         v-for="sub in subjects"
-        :key="sub.name"
+        :key="sub.name + sub.flatmapUUID"
         class="subject-selector-card"
         :class="{ selected: isSelected(sub) }"
         @click="toggleSelection(sub)"
         >
             <template #header>
                 <div class="card-header">
-                    <span>{{ sub.name }}</span>
+                    <span>{{ sub.label || sub.name }}</span>
                 </div>
             </template>
             <div>Sex: {{ sub.sex }}</div>
@@ -41,10 +41,10 @@ import { onBeforeMount } from 'vue';
 
  // Example subjects with flatmapUUIDs for testing
  const exampleSubjects = [
-    { name: "M000_right", sex: "M", age: "", flatmapUUID: 'a38d52c4-f97e-5449-a56c-9b7786625a2a' },
-    { name: "M000_left", sex: "M", age: "", flatmapUUID: 'a2fd9953-fee3-5459-8b83-c55981958a2a' },
-    { name: "f006_right", sex: "M", age: "", flatmapUUID: '238599e8-fd25-533e-9f88-68fad90c1bf2' },
-    { name: "f006_left", sex: "M", age: "", flatmapUUID: '0ea45841-ce99-5b86-8d16-2d12689566f6' },
+    { name: "sub-M000", label: "M000 Right", sex: "X", age: "", flatmapUUID: 'a38d52c4-f97e-5449-a56c-9b7786625a2a' },
+    { name: "sub-M000", label: "M000 Left", sex: "X", age: "", flatmapUUID: 'a2fd9953-fee3-5459-8b83-c55981958a2a' },
+    { name: "sub-f006", label: "f006 Right", sex: "X", age: "", flatmapUUID: '238599e8-fd25-533e-9f88-68fad90c1bf2' },
+    { name: "sub-f006", label: "f006 Left", sex: "X", age: "", flatmapUUID: '0ea45841-ce99-5b86-8d16-2d12689566f6' },
 ];
 // add example subjects in subjects for testing
 const subjects = computed(()=>[...SubjectStore.DistinctSubjects, ...exampleSubjects])
