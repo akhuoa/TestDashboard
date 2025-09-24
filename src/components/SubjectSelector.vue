@@ -53,16 +53,19 @@ const subjects = computed(()=>[...SubjectStore.DistinctSubjects, ...exampleSubje
 
 
   function isSelected(sub) {
-    return selectedSubjects.value.some(s => s.name === sub.name);
+    return selectedSubjects.value.some(s => s.name === sub.name && s.flatmapUUID === sub.flatmapUUID);
     }
 
     function toggleSelection(sub) {
-        const index = selectedSubjects.value.findIndex(s => s.name === sub.name);
-        if (index !== -1) {
-            selectedSubjects.value.splice(index, 1);
-        } else {
+        // clear previous selection to allow only one at a time for testing
+        selectedSubjects.value = [];
+        GlobalVars.setSelectedSubject([]);
+        // const index = selectedSubjects.value.findIndex(s => s.name === sub.name);
+        // if (index !== -1) {
+        //     selectedSubjects.value.splice(index, 1);
+        // } else {
             selectedSubjects.value.push(sub);
-        }
+        // }
         GlobalVars.setSelectedSubject(selectedSubjects.value)
     }
 
