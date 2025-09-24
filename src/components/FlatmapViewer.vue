@@ -9,6 +9,12 @@
             </el-tooltip>
             <p><b>Current Location: </b>{{ locationLabel }}</p>
         </div>
+        <div>
+            <label>
+                <input type="checkbox" @change="toggleVisibility" />
+                Show only the vagus nerve
+            </label>
+        </div>
 
         <FlatmapVuer
             ref="flatmapRef"
@@ -78,9 +84,34 @@ const selectedFlatmapUUID = computed(() => {
 
 // Only these two values of the `models` parameter will give a location that makes sense for a QDB query.
 const validModels = [
-    'http://uri.interlex.org/base/ilx_0789705',
-    'http://uri.interlex.org/base/ilx_0785628'
+    'http://uri.interlex.org/base/ilx_0789705', // Right vagus nerve
+    'http://uri.interlex.org/base/ilx_0785628' // Left vagus nerve
 ];
+
+function toggleVisibility(e) {
+    const onlyShowVagusNerve = e.target.checked;
+    const vagusFilter = {
+        "OR": [
+            {
+                "NOT": {
+                    "tile-layer": "pathways"
+                }
+            },
+            {
+                "AND": [
+                    {
+                        "tile-layer": "pathways"
+                    },
+                    {
+                        "models": validModels
+                    }
+                ]
+            }
+        ]
+    };
+    const payload = onlyShowVagusNerve ? vagusFilter : undefined;
+    flatmapRef.value.setVisibilityFilter(payload);
+}
 
 function FlatmapSelected(_data){
     const [data1] = _data; // first item to check eventType
