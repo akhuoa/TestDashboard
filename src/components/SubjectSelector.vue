@@ -53,7 +53,8 @@ const subjects = computed(()=>[...SubjectStore.DistinctSubjects, ...exampleSubje
 
 
   function isSelected(sub) {
-    return selectedSubjects.value.some(s => s.name === sub.name && s.flatmapUUID === sub.flatmapUUID);
+    const selectedSubject = selectedSubjects.value[0];
+    return selectedSubject && selectedSubject.name === sub.name && selectedSubject.flatmapUUID === sub.flatmapUUID;
     }
 
     function toggleSelection(sub) {
