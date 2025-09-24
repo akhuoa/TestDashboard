@@ -11,7 +11,7 @@
         </div>
         <div>
             <label>
-                <input type="checkbox" @change="toggleVisibility" />
+                <input type="checkbox" @change="onShowVagusChecked" v-model="onlyShowVagusNerve" />
                 Show only the vagus nerve
             </label>
         </div>
@@ -69,11 +69,12 @@ defineOptions({
   const debug = false;
   const GlobalVars = useGlobalVarsStore();
   const disableFlatmapUI = true;
-  let FlatmapReady = false;
+//   let FlatmapReady = false;
   const flatmapLocation = computed(()=>GlobalVars.FLATMAP_LOCATION)
 
   const widgetName = ref('Flatmap Selector');
   const flatmapRef = ref('flatmapRef');
+  const onlyShowVagusNerve = ref(false);
 
 let locationId = "";
 const locationLabel =  computed(()=>flatmapLocation.value||"None Selected");
@@ -88,8 +89,12 @@ const validModels = [
     'http://uri.interlex.org/base/ilx_0785628' // Left vagus nerve
 ];
 
-function toggleVisibility(e) {
-    const onlyShowVagusNerve = e.target.checked;
+function onShowVagusChecked(e) {
+    onlyShowVagusNerve.value = e.target.checked;
+    toggleVisibility();
+}
+
+function toggleVisibility() {
     const vagusFilter = {
         "OR": [
             {
@@ -109,8 +114,12 @@ function toggleVisibility(e) {
             }
         ]
     };
-    const payload = onlyShowVagusNerve ? vagusFilter : undefined;
+    const payload = onlyShowVagusNerve.value ? vagusFilter : undefined;
     flatmapRef.value.setVisibilityFilter(payload);
+}
+
+function FlatmapReady(){
+    toggleVisibility();
 }
 
 function FlatmapSelected(_data){
