@@ -12,7 +12,7 @@
         <div>
             <label>
                 <input type="checkbox" @change="onShowVagusChecked" v-model="onlyShowVagusNerve" />
-                Show only the vagus nerve
+                Show Vagus Nerve Trunk Only
             </label>
         </div>
 
